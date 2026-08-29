@@ -114,14 +114,12 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                 <div class="flex justify-between h-16 sm:h-20 items-center">
                     
-                    <!-- Menu Hamburger Gauche -->
                     <div class="flex items-center w-16 sm:w-20">
                         <button onclick="toggleMenu()" class="p-2 -ml-2 text-gray-600 hover:text-brand-accent transition">
                             <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
                     </div>
 
-                    <!-- Logo Centré (Protégé de la traduction) -->
                     <div class="absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center leading-none cursor-pointer select-none notranslate" translate="no" id="secret-logo-btn" onclick="handleSecretLoginClick()">
                         <div class="flex items-start">
                             <span class="font-sans font-black text-2xl sm:text-4xl text-brand-dark tracking-tighter">Terra</span>
@@ -133,7 +131,6 @@
                         </div>
                     </div>
                     
-                    <!-- Panier Droite -->
                     <div class="flex items-center w-16 sm:w-20 justify-end">
                         <button onclick="toggleCart()" class="p-2 -mr-2 text-gray-600 hover:text-brand-accent transition relative flex items-center">
                             <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
@@ -143,7 +140,6 @@
                 </div>
             </div>
 
-            <!-- Menu Déroulant -->
             <div id="dropdown-menu" class="hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-100 transform origin-top transition-all z-40">
                 <div class="max-w-7xl mx-auto flex flex-col py-2">
                     <button onclick="goToHome(); toggleMenu();" class="px-6 py-4 text-left text-gray-800 hover:bg-gray-50 hover:text-brand-accent font-medium border-b border-gray-50 transition">Accueil</button>
@@ -158,18 +154,32 @@
             <div class="relative z-10 text-center px-4 max-w-3xl pb-8 sm:pb-12">
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-white font-bold mb-4 leading-tight">Le confort que vous méritez</h1>
                 <p class="text-lg md:text-xl text-gray-200 mb-8">Équipez votre intérieur dès aujourd'hui et payez progressivement à votre rythme.</p>
+                
+                <!-- Barre de Recherche Instantanée -->
+                <div class="max-w-xl mx-auto relative">
+                    <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Rechercher un matelas, un canapé, une TV..." class="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-full py-3 px-5 pl-12 text-white placeholder-gray-300 text-sm focus:outline-none focus:bg-white/20 transition shadow-lg">
+                    <svg class="w-5 h-5 text-gray-300 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
             </div>
         </header>
 
         <main id="catalogue" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 relative z-20 -mt-10 sm:-mt-12 bg-white rounded-t-3xl shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
             
+            <!-- Vue Recherche Active -->
+            <div id="search-results-view" class="hidden mb-12">
+                <div class="mb-6 border-b border-gray-200 pb-4 flex justify-between items-center">
+                    <h2 class="text-2xl font-serif font-bold text-brand-dark">Résultats de recherche</h2>
+                    <button onclick="clearSearch()" class="text-sm text-brand-accent hover:underline font-medium">Fermer la recherche</button>
+                </div>
+                <div id="search-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8"></div>
+            </div>
+
             <div id="categories-view">
                 <div class="mb-8 border-b border-gray-200 pb-4">
                     <h2 class="text-2xl sm:text-3xl font-serif font-bold text-brand-dark">Nos Collections</h2>
                     <p class="text-gray-500 mt-2 text-sm sm:text-base">Sélectionnez une catégorie pour voir nos articles disponibles.</p>
                 </div>
                 <div id="category-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                    <!-- Généré dynamiquement -->
                 </div>
             </div>
 
@@ -247,7 +257,6 @@
             </div>
         </section>
 
-        <!-- Pied de page (Protégé de la traduction) -->
         <footer id="contact-footer" class="bg-brand-dark text-white py-12 border-t-4 border-brand-accent relative z-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
                 <h3 class="text-2xl font-serif font-bold mb-4 notranslate" translate="no">Terra Market</h3>
@@ -259,6 +268,7 @@
         </footer>
     </div>
 
+    <!-- Modale de connexion Admin -->
     <div id="admin-login-modal" class="modal-overlay fixed inset-0 z-[70] flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden p-6 relative">
             <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
@@ -282,9 +292,9 @@
         </div>
     </div>
 
+    <!-- Espace Admin (Pro) -->
     <div id="admin-view" class="view-section h-screen w-full overflow-hidden bg-gray-50 flex-col md:flex-row">
         <aside class="w-full md:w-64 bg-white border-r border-gray-200 flex flex-col h-auto md:h-full shrink-0 shadow-sm z-10">
-            <!-- Logo admin (Protégé de la traduction) -->
             <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-brand-dark">
                 <div class="flex items-start notranslate" translate="no">
                     <span class="font-sans font-black text-2xl text-white tracking-tighter">Terra</span>
@@ -298,11 +308,13 @@
                 <ul class="space-y-1">
                     <li><button onclick="switchAdminTab('tab-dashboard')" id="btn-tab-dashboard" class="admin-nav active w-full flex items-center px-6 py-3 text-sm text-gray-600 hover:bg-gray-50 transition">Tableau de bord</button></li>
                     <li><button onclick="switchAdminTab('tab-products')" id="btn-tab-products" class="admin-nav w-full flex items-center px-6 py-3 text-sm text-gray-600 hover:bg-gray-50 transition">Gestion Catalogue</button></li>
+                    <li><button onclick="switchAdminTab('tab-orders')" id="btn-tab-orders" class="admin-nav w-full flex items-center px-6 py-3 text-sm text-gray-600 hover:bg-gray-50 transition">Gestion Commandes</button></li>
                 </ul>
             </nav>
             <div class="flex md:hidden border-b border-gray-200 bg-white">
-                <button onclick="switchAdminTab('tab-dashboard')" id="btn-tab-dashboard-mobile" class="flex-1 py-3 text-sm font-medium border-b-2 border-brand-accent text-brand-accent">Tableau de bord</button>
-                <button onclick="switchAdminTab('tab-products')" id="btn-tab-products-mobile" class="flex-1 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500">Catalogue</button>
+                <button onclick="switchAdminTab('tab-dashboard')" id="btn-tab-dashboard-mobile" class="flex-1 py-3 text-xs font-medium border-b-2 border-brand-accent text-brand-accent">Tableau de bord</button>
+                <button onclick="switchAdminTab('tab-products')" id="btn-tab-products-mobile" class="flex-1 py-3 text-xs font-medium border-b-2 border-transparent text-gray-500">Catalogue</button>
+                <button onclick="switchAdminTab('tab-orders')" id="btn-tab-orders-mobile" class="flex-1 py-3 text-xs font-medium border-b-2 border-transparent text-gray-500">Commandes</button>
             </div>
             <div class="p-6 border-t border-gray-100 hidden md:block">
                 <button onclick="logoutAdmin()" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition shadow-sm">Déconnexion</button>
@@ -310,6 +322,7 @@
         </aside>
 
         <main class="flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8 w-full bg-slate-50">
+            <!-- Onglet Tableau de bord -->
             <div id="tab-dashboard" class="admin-tab-content space-y-8">
                 <div>
                     <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Bonjour, Abel 👋</h2>
@@ -323,10 +336,6 @@
                             <div class="bg-blue-100 p-2.5 rounded-xl text-blue-600">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <span class="flex items-center text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-full">
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                                12%
-                            </span>
                         </div>
                         <div class="relative z-10">
                             <p class="text-sm font-medium text-gray-500 mb-1">Chiffre d'affaires (Livré)</p>
@@ -377,7 +386,7 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-8">
                     <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white">
                         <h3 class="text-lg font-bold text-gray-900">Dernières requêtes clients</h3>
-                        <button class="text-brand-accent text-sm font-medium hover:underline">Voir tout</button>
+                        <button onclick="switchAdminTab('tab-orders')" class="text-brand-accent text-sm font-medium hover:underline">Voir tout</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-100">
@@ -390,13 +399,14 @@
                                     <th scope="col" class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Statut</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-orders-list" class="bg-white divide-y divide-gray-100">
-                                </tbody>
+                            <tbody id="admin-orders-list-dash" class="bg-white divide-y divide-gray-100">
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
+            <!-- Onglet Gestion Catalogue -->
             <div id="tab-products" class="admin-tab-content hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h2 class="text-2xl font-bold text-gray-900 mb-1">Catalogue Produits</h2>
@@ -411,7 +421,7 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produit</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Prix</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Prix & Promo</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Catégorie</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
                                 </tr>
@@ -422,9 +432,37 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Onglet Gestion Commandes -->
+            <div id="tab-orders" class="admin-tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-1">Gestion des Commandes</h2>
+                        <p class="text-sm text-gray-500">Suivez et mettez à jour le statut des commandes clients en temps réel.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client / Contact</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Articles</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Adresse</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Statut & Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-full-orders-list" class="bg-white divide-y divide-gray-200">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
+    <!-- Modale Ajout / Modification Produit -->
     <div id="admin-product-modal" class="modal-overlay fixed inset-0 z-[80] flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[95vh]">
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
@@ -435,7 +473,6 @@
             <div class="p-6 overflow-y-auto flex-grow space-y-4">
                 <input type="hidden" id="prod-id">
                 
-                <!-- SÉLECTEUR RAPIDE POUR MATELAS -->
                 <div id="matelas-quick-fill-container" class="mb-2 p-3 bg-blue-50 border border-blue-100 rounded-lg">
                     <label class="block text-xs font-bold text-brand-accent mb-2">⚡ Remplissage Rapide (Catalogue Matelas)</label>
                     <select id="quick-template" onchange="applyTemplate()" class="w-full border border-blue-200 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white text-gray-700 font-medium">
@@ -453,9 +490,15 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Prix (FCFA) *</label>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Nouveau Prix / Prix de vente (FCFA) *</label>
                         <input type="number" id="prod-price" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
                     </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Ancien Prix Barré (Optionnel)</label>
+                        <input type="number" id="prod-old-price" placeholder="Ex: 65000" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Catégorie *</label>
                         <select id="prod-category" onchange="toggleQuickFillVisibility()" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
@@ -472,13 +515,13 @@
                             <option value="Canapé">Canapé</option>
                         </select>
                     </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Statut *</label>
-                    <select id="prod-status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
-                        <option value="En stock">En stock</option>
-                        <option value="Rupture">Rupture</option>
-                    </select>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Statut *</label>
+                        <select id="prod-status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                            <option value="En stock">En stock</option>
+                            <option value="Rupture">Rupture</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Image du produit</label>
@@ -493,6 +536,7 @@
         </div>
     </div>
 
+    <!-- Panier Latéral -->
     <div id="cart-overlay" class="drawer-overlay fixed inset-0 bg-brand-dark/50 z-50 backdrop-blur-sm" onclick="toggleCart()"></div>
     <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-50 flex flex-col">
         <div class="px-4 sm:px-6 py-4 border-b flex justify-between items-center bg-gray-50">
@@ -521,6 +565,7 @@
         </div>
     </div>
 
+    <!-- Modale de Validation de Commande -->
     <div id="checkout-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4">
         <div class="modal-content bg-white sm:rounded-xl shadow-2xl w-full sm:max-w-lg overflow-hidden flex flex-col h-[90vh] sm:h-auto sm:max-h-[95vh] rounded-t-2xl">
             <div class="px-4 sm:px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 sticky top-0 z-10 shrink-0">
@@ -587,7 +632,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        // On conserve l'import du storage au cas où vous en auriez besoin plus tard, mais on ne l'utilise plus pour l'image.
         import { getStorage } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         const firebaseConfig = {
@@ -613,7 +657,6 @@
         let cart = JSON.parse(localStorage.getItem('terraCart')) || []; 
         let cartTotal = 0;
 
-        // BASES DE DONNÉES DES MATELAS
         const MATELAS_TEMPLATES = [
             { name: "Matelas 1 Place - Spécial Foam (Ep. 15)", price: 22000, desc: "Modèle Spécial Foam" },
             { name: "Matelas 1 Place - Spécial Foam (Ep. 20)", price: 32000, desc: "Modèle Spécial Foam" },
@@ -625,7 +668,6 @@
             { name: "Matelas 1 Place - Ghana Dur (Ep. 20)", price: 52000, desc: "Modèle Ghana Dur" },
             { name: "Matelas 1 Place - Bénin Confort (Ep. 15)", price: 57000, desc: "Modèle Bénin Confort" },
             { name: "Matelas 1 Place - Bénin Confort (Ep. 20)", price: 62000, desc: "Modèle Bénin Confort" },
-
             { name: "Matelas 2 Places - Spécial Foam (Ep. 15)", price: 35000, desc: "Modèle Spécial Foam" },
             { name: "Matelas 2 Places - Spécial Foam (Ep. 20)", price: 52000, desc: "Modèle Spécial Foam" },
             { name: "Matelas 2 Places - Super Mattress (Ep. 18)", price: 42000, desc: "Modèle Super Mattress" },
@@ -641,7 +683,6 @@
             { name: "Matelas 2 Places - Bénin Conf. Dur (Ep. 20)", price: 112000, desc: "Bénin Confort Dur ⭐ Garantie 10 ans" },
             { name: "Matelas 2 Pl. - Médical Bénin Conf. (Ep. 15)", price: 122000, desc: "Médical Bénin Confort ⭐ Garantie 10 ans" },
             { name: "Matelas 2 Pl. - Médical Bénin Conf. (Ep. 20)", price: 142000, desc: "Médical Bénin Confort ⭐ Garantie 10 ans" },
-
             { name: "Matelas 3 Places - Ghana Conf. Semi-Dur (Ep. 15)", price: 77000, desc: "Ghana Confort Semi-Dur" },
             { name: "Matelas 3 Places - Ghana Conf. Semi-Dur (Ep. 20)", price: 87000, desc: "Ghana Confort Semi-Dur" },
             { name: "Matelas 3 Places - Ghana Conf. Dur (Ep. 15)", price: 97000, desc: "Ghana Confort Dur ⭐ Garantie 5 ans" },
@@ -657,21 +698,17 @@
         function initTemplates() {
             const select = document.getElementById('quick-template');
             if(!select) return;
-            
             let currentGroup = "";
             let optgroup = null;
-            
             MATELAS_TEMPLATES.forEach((tmpl, index) => {
                 let groupName = tmpl.name.includes("1 Place") ? "🛏️ MATELAS 1 PLACE" : 
                                 tmpl.name.includes("2 Pl") ? "🛏️ MATELAS 2 PLACES" : "🛏️ MATELAS 3 PLACES";
-                
                 if (currentGroup !== groupName) {
                     currentGroup = groupName;
                     optgroup = document.createElement('optgroup');
                     optgroup.label = groupName;
                     select.appendChild(optgroup);
                 }
-                
                 const opt = document.createElement('option');
                 opt.value = index;
                 opt.text = `${tmpl.name} - ${formatPrice(tmpl.price)}`;
@@ -685,26 +722,22 @@
             const tmpl = MATELAS_TEMPLATES[val];
             document.getElementById('prod-name').value = tmpl.name;
             document.getElementById('prod-price').value = tmpl.price;
+            document.getElementById('prod-old-price').value = '';
             document.getElementById('prod-desc').value = tmpl.desc;
             document.getElementById('prod-category').value = 'Matelas';
-            window.toggleQuickFillVisibility(); // Mise à jour de l'affichage
+            window.toggleQuickFillVisibility();
             showToast("Formulaire auto-rempli avec succès !", "success");
         };
 
-        // FONCTION DE MASQUAGE AUTOMATIQUE
         window.toggleQuickFillVisibility = () => {
             const category = document.getElementById('prod-category').value;
             const container = document.getElementById('matelas-quick-fill-container');
             if (container) {
-                if (category === 'Matelas') {
-                    container.classList.remove('hidden');
-                } else {
-                    container.classList.add('hidden');
-                }
+                if (category === 'Matelas') container.classList.remove('hidden');
+                else container.classList.add('hidden');
             }
         };
 
-        // FONCTION DE COMPRESSION D'IMAGE EN BASE64 (Évite de saturer Firestore)
         function compressImage(file, maxWidth = 800, quality = 0.7) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -716,23 +749,16 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-
-                        // Redimensionnement proportionnel
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
                             width = maxWidth;
                         }
-
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
-                        
-                        // Fond blanc (utile si image transparente)
                         ctx.fillStyle = "#FFFFFF";
                         ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(img, 0, 0, width, height);
-
-                        // Conversion en JPEG allégé
                         resolve(canvas.toDataURL('image/jpeg', quality));
                     };
                     img.onerror = error => reject(error);
@@ -755,14 +781,14 @@
                 onSnapshot(productsRef, (snapshot) => {
                     products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderCategories();
-                    
-                    if(document.getElementById('admin-view').classList.contains('active')) {
-                        renderAdminProducts();
-                    }
-                    
+                    if(document.getElementById('admin-view').classList.contains('active')) renderAdminProducts();
                     if (!document.getElementById('category-detail-view').classList.contains('hidden')) {
                         const catName = document.getElementById('current-category-title').innerText;
                         renderCategoryProducts(catName);
+                    }
+                    const searchInput = document.getElementById('global-search');
+                    if(searchInput && searchInput.value.trim() !== '') {
+                        handleGlobalSearch(searchInput.value);
                     }
                 }, (error) => console.error("Erreur Firestore (Produits):", error));
 
@@ -770,9 +796,9 @@
                 onSnapshot(ordersRef, (snapshot) => {
                     orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     orders.sort((a, b) => b.createdAt - a.createdAt);
-                    
                     if(document.getElementById('admin-view').classList.contains('active')) {
-                        renderOrdersTable();
+                        renderOrdersDash();
+                        renderOrdersTableFull();
                         updateDashboardStats();
                     }
                 }, (error) => console.error("Erreur Firestore (Commandes):", error));
@@ -791,32 +817,26 @@
 
             const elProduct = document.getElementById('admin-product-stat');
             if(elProduct) elProduct.innerText = activeCount;
-
             const elPending = document.getElementById('admin-pending-stat');
             if(elPending) elPending.innerText = pendingCount;
-
             const elRev = document.getElementById('admin-revenue-real');
             if(elRev) elRev.innerText = formatPrice(revenue);
-            
             const elStockVal = document.getElementById('admin-revenue-stat');
             if(elStockVal) elStockVal.innerText = formatPrice(stockValue);
         }
 
-        function renderOrdersTable() {
-            const tbody = document.getElementById('admin-orders-list');
+        function renderOrdersDash() {
+            const tbody = document.getElementById('admin-orders-list-dash');
             if(!tbody) return;
             tbody.innerHTML = '';
-            
             if(orders.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Aucune commande pour le moment</td></tr>`;
                 return;
             }
-
-            orders.slice(0, 10).forEach(order => {
+            orders.slice(0, 5).forEach(order => {
                 const date = new Date(order.createdAt).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
                 const mainItem = order.items && order.items.length > 0 ? order.items[0].name : 'Commande';
                 const initials = order.nom ? order.nom.substring(0, 2).toUpperCase() : '??';
-                
                 let statusClass = 'bg-yellow-100 text-yellow-800';
                 if (order.status === 'Livré') statusClass = 'bg-green-100 text-green-800';
                 if (order.status === 'En préparation') statusClass = 'bg-blue-100 text-blue-800';
@@ -841,14 +861,154 @@
             });
         }
 
+        function renderOrdersTableFull() {
+            const tbody = document.getElementById('admin-full-orders-list');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Aucune commande enregistrée</td></tr>`;
+                return;
+            }
+
+            orders.forEach(order => {
+                const date = new Date(order.createdAt).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                let itemsList = '';
+                if(order.items) {
+                    order.items.forEach(i => { itemsList += `<div class="text-xs text-gray-600">▪️ ${i.quantity}x ${i.name}</div>`; });
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-bold text-gray-900">${order.nom}</div>
+                        <a href="tel:${order.tel}" class="text-xs text-brand-accent font-semibold hover:underline">${order.tel}</a>
+                        <div class="text-[10px] text-gray-400 mt-0.5">${date}</div>
+                    </td>
+                    <td class="px-6 py-4 max-w-xs">${itemsList}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${order.adresse}, <span class="font-semibold">${order.ville}</span></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 text-right">${formatPrice(order.total)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center space-y-2">
+                        <select onchange="updateOrderStatus('${order.id}', this.value)" class="text-xs border border-gray-300 rounded px-2 py-1 bg-white font-medium">
+                            <option value="En attente" ${order.status === 'En attente' ? 'selected' : ''}>En attente</option>
+                            <option value="En préparation" ${order.status === 'En préparation' ? 'selected' : ''}>En préparation</option>
+                            <option value="Livré" ${order.status === 'Livré' ? 'selected' : ''}>Livré</option>
+                        </select>
+                        <div>
+                            <a href="https://wa.me/229${order.tel.replace(/\s+/g, '')}" target="_blank" class="text-[11px] text-green-600 hover:underline font-medium inline-block">💬 WhatsApp client</a>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.updateOrderStatus = async (orderId, newStatus) => {
+            if(!isAdmin) return;
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId), { status: newStatus });
+                showToast("Statut de la commande mis à jour", "success");
+            } catch(e) {
+                console.error(e);
+                showToast("Erreur lors de la mise à jour", "error");
+            }
+        };
+
         function formatPrice(price) { return (parseFloat(price) || 0).toLocaleString('fr-FR') + ' FCFA'; }
+
+        // --- Barre de recherche instantanée ---
+        window.handleGlobalSearch = (query) => {
+            const q = query.trim().toLowerCase();
+            const searchView = document.getElementById('search-results-view');
+            const catView = document.getElementById('categories-view');
+            const detailView = document.getElementById('category-detail-view');
+            const grid = document.getElementById('search-product-grid');
+
+            if(q === '') {
+                searchView.classList.add('hidden');
+                catView.classList.remove('hidden');
+                return;
+            }
+
+            catView.classList.add('hidden');
+            detailView.classList.add('hidden');
+            searchView.classList.remove('hidden');
+            grid.innerHTML = '';
+
+            const matched = products.filter(p => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)) || p.category.toLowerCase().includes(q));
+
+            if(matched.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 bg-gray-50 rounded-2xl"><p class="text-base font-medium">Aucun résultat trouvé pour "${query}"</p></div>`;
+                return;
+            }
+
+            matched.forEach(prod => {
+                grid.innerHTML += buildProductCardHTML(prod);
+            });
+        };
+
+        window.clearSearch = () => {
+            document.getElementById('global-search').value = '';
+            document.getElementById('search-results-view').classList.add('hidden');
+            document.getElementById('categories-view').classList.remove('hidden');
+        };
+
+        // --- Partage WhatsApp Produit ---
+        window.shareProductWhatsApp = (prodName, prodPrice) => {
+            const text = `Bonjour Terra Market 👋,%0AJe suis intéressé(e) par cet article : *${prodName}* au prix de *${formatPrice(prodPrice)}*. Est-il disponible ?`;
+            window.open(`https://wa.me/2290147527920?text=${text}`, '_blank');
+        };
+
+        function buildProductCardHTML(prod) {
+            const isOOS = prod.status === 'Rupture';
+            const hasDiscount = prod.oldPrice && parseFloat(prod.oldPrice) > parseFloat(prod.price);
+            const discountPercent = hasDiscount ? Math.round(((prod.oldPrice - prod.price) / prod.oldPrice) * 100) : 0;
+            
+            let badgesHTML = '';
+            if (isOOS) {
+                badgesHTML += `<div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-md z-10">Rupture</div>`;
+            } else if (hasDiscount) {
+                badgesHTML += `<div class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-md shadow-md z-10">-${discountPercent}%</div>`;
+            }
+
+            const cartBtnClass = isOOS ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-brand-dark";
+            const cmdBtnClass = isOOS ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-brand-dark text-white hover:bg-brand-accent shadow-md";
+
+            return `
+                <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col h-full relative">
+                    ${badgesHTML}
+                    <div class="relative h-56 sm:h-64 overflow-hidden ${isOOS ? 'opacity-70 grayscale-[30%]' : ''}">
+                        <img src="${prod.image}" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${prod.name}">
+                        <button onclick="shareProductWhatsApp('${encodeURIComponent(prod.name)}', ${prod.price})" class="absolute bottom-3 right-3 bg-green-500 hover:bg-green-600 text-white p-2.5 rounded-full shadow-md transition hover:scale-110 z-10" title="Partager sur WhatsApp">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.22-.453-2.333-1.455-1.46-1.31-2.059-2.888-2.122-2.996-.064-.109-.505-.671-.505-1.284 0-.614.318-.918.435-1.036.118-.119.254-.149.338-.149.085 0 .17.001.242.004.075.004.172-.03.271.213.125.307.427 1.045.465 1.121.038.076.064.164.015.263-.048.099-.074.159-.148.248-.076.089-.158.196-.227.272-.075.084-.156.176-.068.329.088.152.392.646.839 1.049.578.522 1.066.685 1.217.76.152.075.242.064.333-.039.091-.104.392-.454.498-.609.106-.155.212-.129.349-.079.137.05 1.157.545 1.258.62.102.074.171.119.196.185.025.066.025.385-.119.79z"></path></svg>
+                        </button>
+                    </div>
+                    <div class="p-4 sm:p-5 flex flex-col flex-grow justify-between bg-white">
+                        <div>
+                            <h3 class="font-serif font-bold text-xl sm:text-2xl text-gray-900 mb-1 sm:mb-2 leading-tight">${prod.name}</h3>
+                            <p class="text-sm text-gray-500 mb-3 line-clamp-2 min-h-[40px]">${prod.description || ''}</p>
+                            <div class="flex items-center space-x-2 mb-4 sm:mb-5">
+                                <p class="text-brand-accent font-bold text-lg sm:text-xl">${formatPrice(prod.price)}</p>
+                                ${hasDiscount ? `<span class="text-xs sm:text-sm text-gray-400 line-through font-medium">${formatPrice(prod.oldPrice)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 sm:space-x-3">
+                            <button ${isOOS ? 'disabled' : ''} onclick="addToCart('${prod.id}', false)" class="flex-none p-3 sm:p-3.5 rounded-lg transition ${cartBtnClass}" title="Ajouter au panier">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </button>
+                            <button ${isOOS ? 'disabled' : ''} onclick="addToCart('${prod.id}', true)" class="flex-grow py-3 sm:py-3.5 rounded-lg transition font-semibold text-sm sm:text-base ${cmdBtnClass}">
+                                ${isOOS ? 'Indisponible' : 'Commander'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
         function renderCategories() {
             const grid = document.getElementById('category-grid');
             if(!grid) return;
             grid.innerHTML = '';
             
-            // Si aucun produit n'existe dans la base de données, on affiche un message vide.
             if (products.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full py-16 text-center text-gray-500 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col items-center justify-center">
@@ -860,36 +1020,44 @@
                 return;
             }
 
-            // Banque d'images des catégories
-            const CATEGORIES_IMG = {
-                "Matelas": "https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=600&q=80",
-                "TV LG Smart": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80",
-                "Siège Balançoire": "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80",
-                "Table à Manger": "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&w=600&q=80",
-                "Rideaux & Draps": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80",
-                "Woofers": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80",
-                "Lits Modernes HDF": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80",
-                "Armoire": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=600&q=80",
-                "Lits Bourrés": "https://plus.unsplash.com/premium_photo-1661766077366-07974e40245a?auto=format&fit=crop&w=600&q=80",
-                "Pose TV/Guéridon": "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=600&q=80",
-                "Canapé": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80"
-            };
-
-            // On ne récupère QUE les catégories qui ont au moins 1 produit
             const existingCategories = [...new Set(products.map(p => p.category))];
 
             existingCategories.forEach(catName => {
-                const img = CATEGORIES_IMG[catName] || "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=80"; // Image par défaut si catégorie inconnue
+                const catProducts = products.filter(p => p.category === catName && p.image);
+                const images = catProducts.map(p => p.image);
+                const displayImages = images.length > 0 ? images : ["https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=80"];
+                const firstImg = displayImages[0];
+
                 grid.innerHTML += `
                     <div onclick="openCategory('${catName}')" class="perf-optimize group cursor-pointer rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 bg-white relative">
-                        <div class="w-full h-40 sm:h-48 overflow-hidden relative">
+                        <div class="w-full h-40 sm:h-48 overflow-hidden relative category-card-container" data-images='${JSON.stringify(displayImages)}'>
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10 transition-opacity group-hover:opacity-90"></div>
-                            <img src="${img}" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="${catName}">
+                            <img src="${firstImg}" loading="lazy" decoding="async" width="600" height="400" class="category-slider-img w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="${catName}">
                             <h3 class="absolute bottom-4 left-4 right-4 z-20 text-white font-bold text-lg sm:text-xl leading-tight">${catName}</h3>
                         </div>
                     </div>
                 `;
             });
+
+            setTimeout(() => {
+                document.querySelectorAll('.category-card-container').forEach(container => {
+                    const imgElement = container.querySelector('.category-slider-img');
+                    try {
+                        const images = JSON.parse(container.dataset.images);
+                        if (images.length > 1) {
+                            let currentIndex = 0;
+                            setInterval(() => {
+                                currentIndex = (currentIndex + 1) % images.length;
+                                imgElement.style.opacity = '0';
+                                setTimeout(() => {
+                                    imgElement.src = images[currentIndex];
+                                    imgElement.style.opacity = '1';
+                                }, 300);
+                            }, 3500);
+                        }
+                    } catch(e) {}
+                });
+            }, 100);
         }
 
         function renderCategoryProducts(categoryName) {
@@ -909,34 +1077,7 @@
             }
             
             filteredProducts.forEach(prod => {
-                const isOOS = prod.status === 'Rupture';
-                const ruptureBadge = isOOS ? `<div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-md z-10">Rupture</div>` : '';
-                const cartBtnClass = isOOS ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-brand-dark";
-                const cmdBtnClass = isOOS ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-brand-dark text-white hover:bg-brand-accent shadow-md";
-
-                grid.innerHTML += `
-                    <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col h-full relative">
-                        ${ruptureBadge}
-                        <div class="relative h-56 sm:h-64 overflow-hidden ${isOOS ? 'opacity-70 grayscale-[30%]' : ''}">
-                            <img src="${prod.image}" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${prod.name}">
-                        </div>
-                        <div class="p-4 sm:p-5 flex flex-col flex-grow justify-between bg-white">
-                            <div>
-                                <h3 class="font-serif font-bold text-xl sm:text-2xl text-gray-900 mb-1 sm:mb-2 leading-tight">${prod.name}</h3>
-                                <p class="text-sm text-gray-500 mb-3 line-clamp-2 min-h-[40px]">${prod.description || ''}</p>
-                                <p class="text-brand-accent font-bold text-lg sm:text-xl mb-4 sm:mb-5">${formatPrice(prod.price)}</p>
-                            </div>
-                            <div class="flex space-x-2 sm:space-x-3">
-                                <button ${isOOS ? 'disabled' : ''} onclick="addToCart('${prod.id}', false)" class="flex-none p-3 sm:p-3.5 rounded-lg transition ${cartBtnClass}" title="Ajouter au panier">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                </button>
-                                <button ${isOOS ? 'disabled' : ''} onclick="addToCart('${prod.id}', true)" class="flex-grow py-3 sm:py-3.5 rounded-lg transition font-semibold text-sm sm:text-base ${cmdBtnClass}">
-                                    ${isOOS ? 'Indisponible' : 'Commander'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                grid.innerHTML += buildProductCardHTML(prod);
             });
         }
 
@@ -1001,7 +1142,6 @@
                 showToast("Veuillez remplir toutes les informations de livraison.", "error"); 
                 return; 
             }
-
             if(!user) {
                 showToast("Connexion à la base de données en cours, patientez...", "error");
                 return;
@@ -1029,7 +1169,6 @@
                 updateCartUI();
                 showToast("Commande validée et transmise !", "success");
                 closeCheckoutModal();
-
             } catch (e) {
                 console.error(e);
                 showToast("Erreur lors de l'enregistrement de la commande.", "error");
@@ -1040,8 +1179,8 @@
             const list = document.getElementById('admin-product-list');
             if(!list) return;
             list.innerHTML = '';
-            
             products.forEach(prod => {
+                const hasDiscount = prod.oldPrice && parseFloat(prod.oldPrice) > parseFloat(prod.price);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="px-6 py-4">
@@ -1057,7 +1196,10 @@
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium hidden sm:table-cell">${formatPrice(prod.price)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium hidden sm:table-cell">
+                        <div>${formatPrice(prod.price)}</div>
+                        ${hasDiscount ? `<div class="text-xs text-gray-400 line-through">${formatPrice(prod.oldPrice)}</div>` : ''}
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">${prod.category}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button onclick="editProduct('${prod.id}')" class="text-brand-accent hover:text-brand-accentHover mr-3 bg-blue-50 px-2 py-1 rounded">Éditer</button>
@@ -1073,9 +1215,9 @@
             const name = document.getElementById('prod-name').value.trim();
             const desc = document.getElementById('prod-desc').value.trim();
             const price = document.getElementById('prod-price').value;
+            const oldPrice = document.getElementById('prod-old-price').value;
             const category = document.getElementById('prod-category').value;
             const status = document.getElementById('prod-status').value;
-            
             const fileInput = document.getElementById('prod-image-file');
             const file = fileInput.files[0];
             let image = document.getElementById('prod-image-url').value;
@@ -1099,27 +1241,30 @@
                 if (file) {
                     uploadStatus.classList.remove('hidden');
                     btnSave.innerText = "Compression...";
-                    
-                    // Compression instantanée en Base64
                     image = await compressImage(file);
-                    
                     uploadStatus.classList.add('hidden');
                 } else if (!image) {
                     image = "https://placehold.co/600x400/f3f4f6/a1a1aa?text=Image+Bientot+Disponible";
                 }
 
                 btnSave.innerText = "Sauvegarde...";
-
                 const productsRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+                const productData = {
+                    name, 
+                    description: desc, 
+                    price: parseInt(price), 
+                    oldPrice: oldPrice ? parseInt(oldPrice) : 0, 
+                    category, 
+                    status, 
+                    image
+                };
+
                 if (id) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id), {
-                        name, description: desc, price: parseInt(price), category, status, image
-                    });
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id), productData);
                     showToast("Produit modifié avec succès !", "success");
                 } else {
-                    await addDoc(productsRef, {
-                        name, description: desc, price: parseInt(price), category, status, image, createdAt: Date.now()
-                    });
+                    productData.createdAt = Date.now();
+                    await addDoc(productsRef, productData);
                     showToast("Produit ajouté avec succès !", "success");
                 }
                 closeProductModal();
@@ -1136,10 +1281,10 @@
 
         async function deleteProduct(id) {
             if(!isAdmin) { showToast("Vous devez être connecté en tant qu'administrateur.", "error"); return; }
-            if(confirm("Êtes-vous sûr de vouloir supprimer définitivement cet article du cloud ?")) {
+            if(confirm("Êtes-vous sûr de vouloir supprimer définitivement cet article ?")) {
                 try {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id));
-                    showToast("Article supprimé de Firestore", "info");
+                    showToast("Article supprimé", "info");
                 } catch(e) {
                     console.error(e);
                     showToast("Erreur lors de la suppression", "error");
@@ -1150,6 +1295,7 @@
         window.openCategory = (name) => {
             document.getElementById('categories-view').classList.add('hidden');
             document.getElementById('category-detail-view').classList.remove('hidden');
+            document.getElementById('search-results-view').classList.add('hidden');
             document.getElementById('current-category-title').innerText = name;
             renderCategoryProducts(name);
             document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
@@ -1159,9 +1305,9 @@
             document.getElementById('categories-view').classList.remove('hidden');
             document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
         };
-        
         window.goToHome = () => {
             closeCategory();
+            clearSearch();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -1170,14 +1316,9 @@
             document.getElementById('cart-overlay').classList.toggle('open');
             document.body.style.overflow = document.getElementById('cart-drawer').classList.contains('open') ? 'hidden' : '';
         };
-        
         window.toggleMenu = () => {
             const menu = document.getElementById('dropdown-menu');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-            } else {
-                menu.classList.add('hidden');
-            }
+            menu.classList.toggle('hidden');
         };
 
         window.addToCart = (productId, instantCheckout = false) => {
@@ -1252,7 +1393,6 @@
             btn.innerText = "Connexion...";
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                // isAdmin est confirmé par onAuthStateChanged ci-dessous.
             } catch (e) {
                 console.error(e);
                 errEl.innerText = "E-mail ou mot de passe incorrect.";
@@ -1262,11 +1402,8 @@
                 btn.innerText = "Se connecter";
             }
         };
-        window.logoutAdmin = () => {
-            signOut(auth).catch((e) => console.error(e));
-        };
+        window.logoutAdmin = () => { signOut(auth).catch((e) => console.error(e)); };
 
-        // Bascule l'affichage client/admin en fonction de l'état réel d'authentification Firebase.
         onAuthStateChanged(auth, (fbUser) => {
             isAdmin = !!(fbUser && !fbUser.isAnonymous);
             if (isAdmin) {
@@ -1275,7 +1412,7 @@
                 document.getElementById('admin-view').classList.add('active');
                 window.scrollTo(0, 0);
                 showToast("Connexion à l'Espace Pro réussie", "success");
-                renderAdminProducts(); renderOrdersTable(); updateDashboardStats();
+                renderAdminProducts(); renderOrdersTableFull(); updateDashboardStats();
             } else if (document.getElementById('admin-view').classList.contains('active')) {
                 document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
                 document.getElementById('client-view').classList.add('active');
@@ -1283,12 +1420,22 @@
         });
         
         window.switchAdminTab = (tabId) => {
-            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden')); document.getElementById(tabId).classList.remove('hidden');
-            document.querySelectorAll('.admin-nav').forEach(el => el.classList.remove('active')); if(document.getElementById(`btn-${tabId}`)) document.getElementById(`btn-${tabId}`).classList.add('active');
-            const mDash = document.getElementById('btn-tab-dashboard-mobile'), mProd = document.getElementById('btn-tab-products-mobile');
-            if(mDash && mProd) {
-                if(tabId === 'tab-dashboard') { mDash.classList.replace('border-transparent', 'border-brand-accent'); mDash.classList.replace('text-gray-500', 'text-brand-accent'); mProd.classList.replace('border-brand-accent', 'border-transparent'); mProd.classList.replace('text-brand-accent', 'text-gray-500'); }
-                else { mProd.classList.replace('border-transparent', 'border-brand-accent'); mProd.classList.replace('text-gray-500', 'text-brand-accent'); mDash.classList.replace('border-brand-accent', 'border-transparent'); mDash.classList.replace('text-brand-accent', 'text-gray-500'); }
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden')); 
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelectorAll('.admin-nav').forEach(el => el.classList.remove('active')); 
+            if(document.getElementById(`btn-${tabId}`)) document.getElementById(`btn-${tabId}`).classList.add('active');
+            
+            const mDash = document.getElementById('btn-tab-dashboard-mobile'), mProd = document.getElementById('btn-tab-products-mobile'), mOrd = document.getElementById('btn-tab-orders-mobile');
+            if(mDash && mProd && mOrd) {
+                [mDash, mProd, mOrd].forEach(btn => {
+                    btn.classList.replace('border-brand-accent', 'border-transparent');
+                    btn.classList.replace('text-brand-accent', 'text-gray-500');
+                });
+                const activeMob = document.getElementById(`btn-${tabId}-mobile`);
+                if(activeMob) {
+                    activeMob.classList.replace('border-transparent', 'border-brand-accent');
+                    activeMob.classList.replace('text-gray-500', 'text-brand-accent');
+                }
             }
         };
         
@@ -1304,6 +1451,7 @@
                 document.getElementById('prod-name').value = prod.name; 
                 document.getElementById('prod-desc').value = prod.description || ""; 
                 document.getElementById('prod-price').value = prod.price; 
+                document.getElementById('prod-old-price').value = prod.oldPrice || ""; 
                 document.getElementById('prod-category').value = prod.category; 
                 document.getElementById('prod-status').value = prod.status; 
                 document.getElementById('prod-image-url').value = prod.image || ""; 
@@ -1313,12 +1461,11 @@
                 document.getElementById('prod-name').value = ''; 
                 document.getElementById('prod-desc').value = ''; 
                 document.getElementById('prod-price').value = ''; 
+                document.getElementById('prod-old-price').value = ''; 
                 document.getElementById('prod-category').value = 'Matelas'; 
                 document.getElementById('prod-status').value = 'En stock'; 
                 document.getElementById('prod-image-url').value = '';
             }
-            
-            // Applique le masquage automatique lors de l'ouverture
             window.toggleQuickFillVisibility();
         };
         
@@ -1327,7 +1474,6 @@
         window.editProduct = (id) => window.openProductModal(id);
         window.deleteProduct = deleteProduct;
 
-        // INIT
         window.onload = () => { 
             initFirebase();
             initTemplates();
