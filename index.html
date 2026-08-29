@@ -1687,8 +1687,15 @@
                     const compressedDataUrl = await compressImage(file, 800, 0.75);
                     
                     btnSave.innerText = "Upload...";
-                    const res = await fetch(compressedDataUrl);
-                    const blob = await res.blob();
+                    // Convertir le DataURL en Blob de manière plus robuste
+                    const byteString = atob(compressedDataUrl.split(',')[1]);
+                    const mimeString = compressedDataUrl.split(',')[0].split(':')[1].split(';')[0];
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) {
+                        ia[i] = byteString.charCodeAt(i);
+                    }
+                    const blob = new Blob([ab], {type: mimeString});
                     
                     const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
                     const snapshot = await uploadBytes(storageRef, blob);
