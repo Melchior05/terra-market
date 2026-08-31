@@ -1,0 +1,2577 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title translate="no">Terra Market</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#111827',
+                            light: '#F9FAFB',
+                            accent: '#2563EB',
+                            accentHover: '#1D4ED8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #F9FAFB; -webkit-tap-highlight-color: transparent; }
+        
+        .view-section { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        #client-view.active { display: block; opacity: 1; }
+        #admin-view.active { display: flex; opacity: 1; } 
+        
+        #cart-drawer {
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #cart-drawer.open { transform: translateX(0); }
+        .drawer-overlay {
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .drawer-overlay.open { opacity: 1; visibility: visible; }
+
+        .modal-overlay {
+            background-color: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content {
+            transform: translateY(100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @media (min-width: 640px) {
+            .modal-content { transform: translateY(20px) scale(0.95); }
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+
+        #toast-container { position: fixed; bottom: max(20px, env(safe-area-inset-bottom)); right: 20px; z-index: 100; left: 20px; pointer-events: none; }
+        @media (min-width: 640px) { #toast-container { left: auto; max-width: 400px; } }
+        .toast {
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: auto;
+        }
+        .toast.show { transform: translateY(0); }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .perf-optimize { content-visibility: auto; contain-intrinsic-size: 0 400px; }
+
+        #admin-view { background-color: #f3f4f6; min-height: 100vh; }
+        .admin-nav { border-left: 4px solid transparent; }
+        .admin-nav.active { background-color: #eff6ff; border-left-color: #2563EB; color: #1D4ED8; font-weight: 600; }
+        
+        .logo-click-pulse { animation: logoPulse 0.3s ease-in-out; }
+        @keyframes logoPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); opacity: 0.8; }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased flex flex-col min-h-screen">
+
+    <!-- Bouton WhatsApp Flottant -->
+    <a id="whatsapp-float-btn" href="https://wa.me/2290147527920" target="_blank" class="fixed bottom-6 left-6 bg-green-500 text-white p-3.5 sm:p-4 rounded-full shadow-[0_4px_14px_0_rgba(34,197,94,0.39)] hover:bg-green-600 transition-all z-[90] hover:scale-110 flex items-center justify-center">
+        <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.22-.453-2.333-1.455-1.46-1.31-2.059-2.888-2.122-2.996-.064-.109-.505-.671-.505-1.284 0-.614.318-.918.435-1.036.118-.119.254-.149.338-.149.085 0 .17.001.242.004.075.004.172-.03.271.213.125.307.427 1.045.465 1.121.038.076.064.164.015.263-.048.099-.074.159-.148.248-.076.089-.158.196-.227.272-.075.084-.156.176-.068.329.088.152.392.646.839 1.049.578.522 1.066.685 1.217.76.152.075.242.064.333-.039.091-.104.392-.454.498-.609.106-.155.212-.129.349-.079.137.05 1.157.545 1.258.62.102.074.171.119.196.185.025.066.025.385-.119.79z"></path></svg>
+    </a>
+
+    <!-- VUE CLIENT -->
+    <div id="client-view" class="view-section active flex-grow">
+        
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm sticky top-0 z-40 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="flex justify-between h-16 sm:h-20 items-center">
+                    
+                    <!-- Menu Hamburger Gauche -->
+                    <div class="flex items-center w-16 sm:w-20">
+                        <button onclick="toggleMenu()" class="p-2 -ml-2 text-gray-600 hover:text-brand-accent transition">
+                            <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Logo Centré -->
+                    <div class="absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center leading-none cursor-pointer select-none" id="secret-logo-btn" onclick="handleSecretLoginClick()">
+                        <div class="flex items-start">
+                            <span class="font-sans font-black text-2xl sm:text-4xl text-brand-dark tracking-tighter">Terra</span>
+                            <span class="text-brand-dark text-lg sm:text-xl font-bold ml-0.5">°</span>
+                        </div>
+                        <div class="flex items-center space-x-1 mt-1">
+                            <div class="h-1.5 w-10 sm:h-2.5 sm:w-16 bg-brand-dark"></div>
+                            <span class="text-brand-accent font-bold text-[10px] sm:text-sm tracking-wide">Market</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Panier Droite -->
+                    <div class="flex items-center w-16 sm:w-20 justify-end">
+                        <button onclick="toggleCart()" class="p-2 -mr-2 text-gray-600 hover:text-brand-accent transition relative flex items-center">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            <span id="cart-badge" class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm hidden">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Déroulant -->
+            <div id="dropdown-menu" class="hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-100 transform origin-top transition-all z-40">
+                <div class="max-w-7xl mx-auto flex flex-col py-2">
+                    <button onclick="goToHome(); toggleMenu();" class="px-6 py-4 text-left text-gray-800 hover:bg-gray-50 hover:text-brand-accent font-medium border-b border-gray-50 transition">Accueil</button>
+                    <button onclick="closeCategory(); toggleMenu();" class="px-6 py-4 text-left text-gray-800 hover:bg-gray-50 hover:text-brand-accent font-medium border-b border-gray-50 transition">Nos Collections</button>
+                    <a href="#contact-footer" onclick="toggleMenu()" class="px-6 py-4 text-left text-gray-800 hover:bg-gray-50 hover:text-brand-accent font-medium transition">Contact & Informations</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="relative bg-brand-dark h-[40vh] sm:h-[45vh] flex items-center justify-center overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80" alt="Intérieur premium" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" class="absolute inset-0 w-full h-full object-cover opacity-40">
+            <div class="relative z-10 text-center px-4 max-w-3xl pb-8 sm:pb-12">
+                <h1 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl font-serif text-white font-bold mb-4 leading-tight">Le confort que vous méritez</h1>
+                <p id="hero-subtitle" class="text-lg md:text-xl text-gray-200 mb-8">Équipez votre intérieur dès aujourd'hui et payez progressivement à votre rythme.</p>
+                
+                <!-- Barre de Recherche Globale -->
+                <div class="max-w-xl mx-auto relative">
+                    <input type="text" id="global-search" oninput="handleGlobalSearch(this.value)" placeholder="Rechercher un matelas, un canapé, une TV..." class="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-full py-3 px-5 pl-12 text-white placeholder-gray-300 text-sm focus:outline-none focus:bg-white/20 transition shadow-lg">
+                    <svg class="w-5 h-5 text-gray-300 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- Catalogue Section -->
+        <main id="catalogue" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 relative z-20 -mt-10 sm:-mt-12 bg-white rounded-t-3xl shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+            
+            <!-- VUE : Résultats de recherche -->
+            <div id="search-results-view" class="hidden mb-12">
+                <div class="mb-6 border-b border-gray-200 pb-4 flex justify-between items-center">
+                    <h2 class="text-2xl font-serif font-bold text-brand-dark">Résultats de recherche</h2>
+                    <button onclick="clearSearch()" class="text-sm text-brand-accent hover:underline font-medium">Fermer la recherche</button>
+                </div>
+                <div id="search-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8"></div>
+            </div>
+
+            <!-- VUE : Catégories (Accueil du catalogue) -->
+            <div id="categories-view">
+                <div class="mb-8 border-b border-gray-200 pb-4">
+                    <h2 class="text-2xl sm:text-3xl font-serif font-bold text-brand-dark">Nos Collections</h2>
+                    <p class="text-gray-500 mt-2 text-sm sm:text-base">Sélectionnez une catégorie pour voir nos articles disponibles.</p>
+                </div>
+                <div id="category-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <!-- Généré dynamiquement -->
+                </div>
+            </div>
+
+            <!-- VUE : Produits d'une catégorie -->
+            <div id="category-detail-view" class="hidden">
+                <div class="mb-6 sm:mb-8 border-b border-gray-200 pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <button onclick="closeCategory()" class="text-brand-accent hover:text-brand-dark font-medium flex items-center transition bg-blue-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg text-sm sm:text-base mb-2">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                            Retour aux collections
+                        </button>
+                        <h2 id="current-category-title" class="text-2xl sm:text-3xl font-serif font-bold text-brand-dark">Catégorie</h2>
+                    </div>
+
+                    <!-- Options de Tri -->
+                    <div class="flex items-center space-x-2 w-full sm:w-auto">
+                        <span class="text-xs font-semibold text-gray-500 whitespace-nowrap">Trier par :</span>
+                        <select id="product-sort-select" onchange="sortCategoryProducts()" class="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm bg-white font-medium focus:ring-brand-accent focus:outline-none shadow-sm">
+                            <option value="newest">✨ Nouveautés</option>
+                            <option value="price-asc">📉 Prix croissant</option>
+                            <option value="price-desc">📈 Prix décroissant</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+                    <!-- Généré dynamiquement -->
+                </div>
+            </div>
+            
+        </main>
+        
+        <section class="bg-white py-16 sm:py-24 mt-auto relative overflow-hidden">
+            <!-- Arrière-plan décoratif subtil -->
+            <div class="absolute top-0 left-0 w-64 h-64 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+            <div class="absolute bottom-0 right-0 w-80 h-80 bg-green-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
+                    
+                    <!-- Colonne de gauche : Texte et Contact -->
+                    <div class="w-full lg:w-5/12 space-y-8">
+                        <div>
+                            <div class="inline-flex items-center space-x-2 bg-blue-50 border border-blue-100 text-brand-accent px-3 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase mb-6 shadow-sm">
+                                <span class="relative flex h-2.5 w-2.5">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-accent"></span>
+                                </span>
+                                <span>Pourquoi nous choisir</span>
+                            </div>
+                            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-dark leading-[1.15] mb-6">
+                                Votre maison mérite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-blue-400">le meilleur.</span>
+                            </h2>
+                            <p class="text-gray-600 leading-relaxed text-base sm:text-lg">
+                                Équipez votre maison dès aujourd'hui et <span class="font-bold text-gray-900 border-b-2 border-brand-accent/30 pb-0.5">payez progressivement</span> vos meubles selon nos conditions flexibles. Ne repoussez plus votre confort.
+                            </p>
+                        </div>
+
+                        <!-- Carte Contact stylisée -->
+                        <div class="bg-white/80 backdrop-blur-md rounded-2xl p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-300">
+                            <div class="flex flex-col space-y-4">
+                                <div class="flex items-start">
+                                    <div class="bg-gray-50 p-2.5 rounded-xl text-gray-600 mr-4 shrink-0 border border-gray-100">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    </div>
+                                    <div class="pt-0.5">
+                                        <p class="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Boutique physique</p>
+                                        <span id="store-address-text" class="text-sm sm:text-base text-gray-900 font-bold">Womey Gbègnigan, Abomey-Calavi</span>
+                                    </div>
+                                </div>
+                                <div class="h-px w-full bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100"></div>
+                                <div class="flex items-start">
+                                    <div class="bg-blue-50 p-2.5 rounded-xl text-brand-accent mr-4 shrink-0 border border-blue-100">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                    </div>
+                                    <div class="pt-0.5">
+                                        <p class="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Assistance & Commandes</p>
+                                        <div class="text-sm sm:text-base font-bold flex flex-wrap gap-x-3 gap-y-1">
+                                            <a id="store-phone-primary" href="tel:+2290147527920" class="text-gray-900 hover:text-brand-accent transition-colors">+229 01 47 52 79 20</a>
+                                            <span class="text-gray-300 hidden sm:inline">|</span>
+                                            <a id="store-phone-secondary" href="tel:+2290151180744" class="text-gray-900 hover:text-brand-accent transition-colors">+229 01 51 18 07 44</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Colonne de droite : Grille des fonctionnalités Bento -->
+                    <div class="w-full lg:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:pl-4 mt-6 lg:mt-0">
+                        
+                        <!-- Carte 1 : Crédit (Mise en évidence) -->
+                        <div onclick="openServiceModal('credit')" class="cursor-pointer group bg-gradient-to-br from-white to-blue-50/50 p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-blue-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(37,99,235,0.15)] transition-all duration-300 relative overflow-hidden sm:-translate-y-6 flex flex-col h-full">
+                            <div class="absolute right-0 top-0 w-32 h-32 bg-brand-accent opacity-5 rounded-bl-[100px] transition-transform duration-700 group-hover:scale-125"></div>
+                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-brand-accent mb-6 relative z-10 group-hover:bg-brand-accent group-hover:text-white transition-colors duration-300 group-hover:rotate-6 shrink-0">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div class="relative z-10 flex flex-col flex-grow">
+                                <h4 id="front-service-credit-title" class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-brand-accent transition-colors">Meubles à crédit</h4>
+                                <p id="front-service-credit-desc" class="text-sm text-gray-500 leading-relaxed mb-4">Repartez avec vos meubles dès aujourd'hui et étalez vos paiements en toute sérénité.</p>
+                                <span class="inline-flex items-center text-xs font-bold text-brand-accent mt-auto">En savoir plus <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </div>
+                        </div>
+
+                        <!-- Carte 2 : Électroménager -->
+                        <div onclick="openServiceModal('electro')" class="cursor-pointer group bg-white p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-gray-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
+                            <div class="w-14 h-14 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center text-gray-600 mb-6 group-hover:bg-gray-900 group-hover:text-white transition-colors duration-300 group-hover:-rotate-6 shrink-0">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div class="flex flex-col flex-grow">
+                                <h4 id="front-service-electro-title" class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-gray-900 transition-colors">Électroménager</h4>
+                                <p id="front-service-electro-desc" class="text-sm text-gray-500 leading-relaxed mb-4">Découvrez notre gamme de téléviseurs et d'appareils de dernière génération.</p>
+                                <span class="inline-flex items-center text-xs font-bold text-gray-900 mt-auto group-hover:text-brand-accent transition-colors">Voir les articles <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </div>
+                        </div>
+
+                        <!-- Carte 3 : Aménagement -->
+                        <div onclick="openServiceModal('amenagement')" class="cursor-pointer group bg-white p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-gray-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 sm:-translate-y-6 flex flex-col h-full">
+                            <div class="w-14 h-14 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center text-gray-600 mb-6 group-hover:bg-gray-900 group-hover:text-white transition-colors duration-300 group-hover:-rotate-6 shrink-0">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            </div>
+                            <div class="flex flex-col flex-grow">
+                                <h4 id="front-service-amenagement-title" class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-gray-900 transition-colors">Aménagement</h4>
+                                <p id="front-service-amenagement-desc" class="text-sm text-gray-500 leading-relaxed mb-4">Des meubles modernes, lits luxueux et salons élégants pour sublimer votre intérieur.</p>
+                                <span class="inline-flex items-center text-xs font-bold text-gray-900 mt-auto group-hover:text-brand-accent transition-colors">Voir les articles <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </div>
+                        </div>
+
+                        <!-- Carte 4 : Livraison (Mise en évidence) -->
+                        <div onclick="openServiceModal('livraison')" class="cursor-pointer group bg-gradient-to-br from-white to-green-50/50 p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-green-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(34,197,94,0.15)] transition-all duration-300 relative overflow-hidden flex flex-col h-full">
+                            <div class="absolute right-0 top-0 w-32 h-32 bg-green-500 opacity-5 rounded-bl-[100px] transition-transform duration-700 group-hover:scale-125"></div>
+                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-green-600 mb-6 relative z-10 group-hover:bg-green-500 group-hover:text-white transition-colors duration-300 group-hover:rotate-6 shrink-0">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
+                            </div>
+                            <div class="relative z-10 flex flex-col flex-grow">
+                                <h4 id="front-service-livraison-title" class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-green-600 transition-colors">Livraison à domicile</h4>
+                                <p id="front-service-livraison-desc" class="text-sm text-gray-500 leading-relaxed mb-4">Profitez d'un service de livraison rapide et soigné directement à votre adresse.</p>
+                                <span class="inline-flex items-center text-xs font-bold text-green-600 mt-auto">En savoir plus <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer id="contact-footer" class="bg-brand-dark text-white py-12 border-t-4 border-brand-accent relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+                <h3 class="text-2xl font-serif font-bold mb-4 notranslate" translate="no">Terra Market</h3>
+                <p class="text-gray-400 text-sm max-w-md mx-auto mb-6">Votre partenaire de confiance pour un intérieur élégant, confortable et accessible au Bénin.</p>
+                <div class="pt-6 border-t border-gray-800 w-full text-gray-500 text-xs">
+                    &copy; 2026 <span class="notranslate" translate="no">Terra Market</span>. Tous droits réservés.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL : Lightbox Image -->
+    <div id="lightbox-modal" class="fixed inset-0 z-[120] bg-black/90 hidden flex flex-col items-center justify-center backdrop-blur-sm" onclick="closeLightbox()">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white hover:text-gray-300 bg-white/10 p-2 rounded-full backdrop-blur z-10 transition">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <img id="lightbox-img" src="" alt="Zoom" class="max-w-[95vw] max-h-[90vh] object-contain shadow-2xl rounded-lg scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- MODAL : Détail Produit -->
+    <div id="product-detail-modal" class="modal-overlay fixed inset-0 z-[110] flex items-end sm:items-center justify-center sm:p-4">
+        <div class="modal-content bg-white sm:rounded-2xl shadow-2xl w-full sm:max-w-4xl overflow-hidden flex flex-col sm:flex-row h-[90vh] sm:h-auto sm:max-h-[85vh] rounded-t-3xl relative">
+            <button onclick="closeProductDetails()" class="absolute top-4 right-4 bg-white text-gray-600 hover:text-gray-900 p-2 rounded-full shadow-md z-20 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div id="detail-img-container" class="w-full sm:w-1/2 bg-gray-50 relative flex items-center justify-center shrink-0 cursor-zoom-in h-64 sm:h-auto border-r border-gray-100" onclick="openLightbox(this.querySelector('img').src)">
+                <img id="detail-img" src="" alt="Produit" class="w-full h-full object-contain p-4 sm:p-8 mix-blend-multiply">
+                <div class="absolute bottom-4 left-4 bg-white/80 backdrop-blur px-3 py-1.5 rounded-lg shadow-sm text-xs font-bold text-gray-700 flex items-center">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg> Cliquez pour zoomer
+                </div>
+                <div id="detail-badges" class="absolute top-4 left-4 flex flex-col gap-2 z-10"></div>
+            </div>
+            
+            <div class="w-full sm:w-1/2 p-6 sm:p-8 flex flex-col flex-grow overflow-y-auto pb-safe">
+                <div class="mb-4">
+                    <span id="detail-category" class="text-xs font-bold uppercase tracking-wider text-brand-accent bg-blue-50 px-2.5 py-1 rounded-md mb-3 inline-block">Catégorie</span>
+                    <h2 id="detail-title" class="text-2xl sm:text-3xl font-serif font-bold text-gray-900 leading-tight mb-2">Nom du Produit</h2>
+                    <div class="flex items-end gap-3 mt-4 mb-6">
+                        <span id="detail-price" class="text-3xl font-bold text-gray-900">0 FCFA</span>
+                        <span id="detail-old-price" class="text-lg text-gray-400 line-through font-medium hidden">0 FCFA</span>
+                    </div>
+                </div>
+                
+                <div class="prose prose-sm text-gray-600 mb-8 flex-grow">
+                    <p id="detail-desc" class="leading-relaxed">Description détaillée du produit...</p>
+                </div>
+
+                <div id="detail-variantes-container" class="mb-6 hidden">
+                    <label class="block text-sm font-bold text-gray-900 mb-2">Options disponibles :</label>
+                    <select id="detail-variante-select" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-brand-accent focus:border-brand-accent bg-white font-medium shadow-sm outline-none transition"></select>
+                </div>
+                
+                <div class="mt-auto flex flex-col gap-3">
+                    <div class="flex gap-3">
+                        <button id="detail-btn-cart" class="flex-none p-4 bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-xl transition font-bold flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </button>
+                        <button id="detail-btn-order" class="flex-grow py-4 bg-brand-dark text-white rounded-xl transition font-bold text-base hover:bg-brand-accent hover:shadow-lg hover:shadow-blue-500/30">
+                            Commander maintenant
+                        </button>
+                    </div>
+                    <button id="detail-btn-wa" class="w-full py-3.5 bg-green-500 text-white rounded-xl transition font-bold text-sm hover:bg-green-600 flex items-center justify-center shadow-sm">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.22-.453-2.333-1.455-1.46-1.31-2.059-2.888-2.122-2.996-.064-.109-.505-.671-.505-1.284 0-.614.318-.918.435-1.036.118-.119.254-.149.338-.149.085 0 .17.001.242.004.075.004.172-.03.271.213.125.307.427 1.045.465 1.121.038.076.064.164.015.263-.048.099-.074.159-.148.248-.076.089-.158.196-.227.272-.075.084-.156.176-.068.329.088.152.392.646.839 1.049.578.522 1.066.685 1.217.76.152.075.242.064.333-.039.091-.104.392-.454.498-.609.106-.155.212-.129.349-.079.137.05 1.157.545 1.258.62.102.074.171.119.196.185.025.066.025.385-.119.79z"></path></svg>
+                        Poser une question via WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL : Services (Détail de l'offre cliquée) -->
+    <div id="service-modal" class="modal-overlay fixed inset-0 z-[105] flex items-end sm:items-center justify-center sm:p-4">
+        <div class="modal-content bg-white sm:rounded-2xl shadow-2xl w-full sm:max-w-5xl overflow-hidden flex flex-col h-[90vh] sm:h-[85vh] rounded-t-3xl relative">
+            <button onclick="closeServiceModal()" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full z-20 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div id="service-modal-content" class="w-full h-full overflow-y-auto flex flex-col">
+                <!-- Rempli dynamiquement en JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Tiroir du Panier -->
+    <div id="cart-overlay" class="drawer-overlay fixed inset-0 bg-brand-dark/50 z-50 backdrop-blur-sm" onclick="toggleCart()"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-50 flex flex-col">
+        <div class="px-4 sm:px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+            <h3 class="font-serif font-bold text-xl text-brand-dark flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                Votre Panier
+            </h3>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600 transition p-2 bg-gray-100 rounded-full">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="cart-items" class="flex-grow overflow-y-auto p-4 sm:p-6 space-y-4"></div>
+        
+        <div class="border-t p-4 sm:p-6 bg-gray-50 pb-safe space-y-4">
+            <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">Avez-vous un code promo ?</label>
+                <div class="flex space-x-2">
+                    <input type="text" id="promo-code-input" placeholder="Ex: TERRA10 ou SOLDE" class="w-full uppercase border border-gray-300 rounded-md px-3 py-1.5 text-xs focus:ring-brand-accent focus:outline-none font-medium">
+                    <button onclick="applyPromoCode()" class="bg-brand-dark text-white px-3 py-1.5 rounded-md text-xs font-bold hover:bg-black transition shrink-0">Appliquer</button>
+                </div>
+                <p id="promo-message" class="text-xs mt-1.5 hidden font-medium"></p>
+            </div>
+
+            <div class="space-y-1.5 text-sm">
+                <div class="flex justify-between text-gray-600">
+                    <span>Sous-total</span>
+                    <span id="cart-subtotal">0 FCFA</span>
+                </div>
+                <div id="promo-discount-row" class="flex justify-between text-green-600 font-medium hidden">
+                    <span>Remise (<span id="promo-code-name"></span>)</span>
+                    <span id="cart-discount">-0 FCFA</span>
+                </div>
+                <div class="flex justify-between items-center text-lg sm:text-xl font-bold text-brand-dark pt-2 border-t border-gray-200">
+                    <span>Total à payer</span>
+                    <span id="cart-total">0 FCFA</span>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button onclick="clearCart()" id="clear-cart-btn" class="text-xs text-red-500 hover:text-red-600 font-medium transition hidden">
+                    Vider le panier
+                </button>
+            </div>
+
+            <button onclick="openCheckout()" id="checkout-btn" class="w-full bg-brand-accent text-white py-3.5 rounded-lg font-bold text-base hover:bg-brand-accentHover transition shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
+                Valider la commande
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL : Checkout -->
+    <div id="checkout-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4">
+        <div class="modal-content bg-white sm:rounded-xl shadow-2xl w-full sm:max-w-lg overflow-hidden flex flex-col h-[90vh] sm:h-auto sm:max-h-[95vh] rounded-t-2xl">
+            <div class="px-4 sm:px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 sticky top-0 z-10 shrink-0">
+                <h3 class="font-serif font-bold text-xl text-brand-dark">Finaliser la commande</h3>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-gray-600 transition bg-white rounded-full p-2 shadow-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto pb-safe flex-grow">
+                <div class="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-100 flex justify-between items-center">
+                    <span class="text-brand-accent font-semibold text-sm sm:text-base" id="checkout-item-count">0 article(s)</span>
+                    <span class="font-bold text-lg sm:text-xl text-brand-dark" id="checkout-total-price">0 FCFA</span>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-4 flex items-center text-sm sm:text-base">
+                    <svg class="w-5 h-5 mr-2 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Informations de livraison
+                </h4>
+                <div class="space-y-4 mb-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Nom complet *</label>
+                            <input type="text" id="checkout-nom" placeholder="Ex: Jean Dupont" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Téléphone *</label>
+                            <input type="tel" id="checkout-tel" placeholder="Ex: 97 00 00 00" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Ville *</label>
+                        <select id="checkout-ville" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                            <option value="Cotonou">Cotonou</option>
+                            <option value="Abomey-Calavi">Abomey-Calavi</option>
+                            <option value="Porto-Novo">Porto-Novo</option>
+                            <option value="Autre">Autre (Préciser dans l'adresse)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Adresse détaillée *</label>
+                        <input type="text" id="checkout-adresse" placeholder="Quartier, rue, repère..." class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                    </div>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-4 text-sm sm:text-base">Mode de paiement</h4>
+                <div class="space-y-3">
+                    <button onclick="processCheckout('WhatsApp')" class="w-full flex items-center justify-between p-4 border border-green-500 bg-green-50 rounded-xl hover:bg-green-100 transition group shadow-sm">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white transition shadow-md shadow-green-500/40 shrink-0">
+                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.22-.453-2.333-1.455-1.46-1.31-2.059-2.888-2.122-2.996-.064-.109-.505-.671-.505-1.284 0-.614.318-.918.435-1.036.118-.119.254-.149.338-.149.085 0 .17.001.242.004.075.004.172-.03.271.213.125.307.427 1.045.465 1.121.038.076.064.164.015.263-.048.099-.074.159-.148.248-.076.089-.158.196-.227.272-.075.084-.156.176-.068.329.088.152.392.646.839 1.049.578.522 1.066.685 1.217.76.152.075.242.064.333-.039.091-.104.392-.454.498-.609.106-.155.212-.129.349-.079.137.05 1.157.545 1.258.62.102.074.171.119.196.185.025.066.025.385-.119.79z"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <span class="block font-bold text-green-700 text-base">Commander via WhatsApp</span>
+                                <span class="block text-xs text-green-600">Paiement à la livraison possible</span>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Écran de Maintenance -->
+    <div id="maintenance-screen" class="hidden fixed inset-0 z-[95] bg-brand-dark text-white flex flex-col items-center justify-center text-center px-6">
+        <div class="flex items-start mb-6">
+            <span class="font-sans font-black text-4xl tracking-tighter">Terra</span>
+            <span class="text-lg font-bold ml-0.5">°</span>
+        </div>
+        <h2 class="text-2xl font-serif font-bold mb-3">Nous préparons quelque chose de mieux</h2>
+        <p class="text-gray-400 max-w-md">Le site est momentanément en maintenance. Revenez très bientôt, ou contactez-nous directement sur WhatsApp pour passer commande.</p>
+        <a id="maintenance-whatsapp-link" href="https://wa.me/2290147527920" target="_blank" class="mt-6 bg-green-500 hover:bg-green-600 transition text-white px-5 py-3 rounded-lg font-bold text-sm shadow-lg shadow-green-500/30">Nous contacter sur WhatsApp</a>
+    </div>
+
+    <!-- MODAL : Login Admin -->
+    <div id="admin-login-modal" class="modal-overlay fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden p-6 relative">
+            <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h3 class="font-bold text-xl text-brand-dark mb-6 text-center notranslate" translate="no">Espace Terra PRO</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Adresse e-mail</label>
+                    <input type="email" id="admin-email" autocomplete="username" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none" placeholder="admin@terramarket.bj">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Mot de passe de gestion</label>
+                    <input type="password" id="admin-password" autocomplete="current-password" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none" placeholder="••••••••">
+                </div>
+                <p id="admin-login-error" class="text-xs text-red-500 hidden"></p>
+                <button onclick="attemptAdminLogin()" id="btn-admin-login" class="w-full bg-brand-dark text-white py-2.5 rounded-lg font-bold text-sm hover:bg-black transition shadow-md">
+                    Se connecter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VUE ADMIN -->
+    <div id="admin-view" class="view-section h-screen w-full overflow-hidden bg-gray-50 flex-col md:flex-row">
+        <!-- Sidebar Admin -->
+        <aside class="w-full md:w-64 bg-white border-r border-gray-200 flex flex-col h-auto md:h-full shrink-0 shadow-sm z-10">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-brand-dark">
+                <div class="flex items-start notranslate" translate="no">
+                    <span class="font-sans font-black text-2xl text-white tracking-tighter">Terra</span>
+                    <span class="text-brand-accent text-sm font-bold ml-0.5">PRO</span>
+                </div>
+                <button onclick="logoutAdmin()" class="text-gray-400 hover:text-white transition md:hidden">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </button>
+            </div>
+            <nav class="flex-grow py-4 overflow-y-auto hidden md:block">
+                <ul class="space-y-1">
+                    <li><button onclick="switchAdminTab('tab-dashboard')" id="btn-tab-dashboard" class="admin-nav active w-full flex items-center px-6 py-3 text-sm text-gray-600 hover:bg-gray-50 transition">Tableau de bord</button></li>
+                    <li><button onclick="switchAdminTab('tab-products')" id="btn-tab-products" class="admin-nav w-full flex items-center px-6 py-3 text-sm text-gray-600 hover:bg-gray-50 transition">Gestion Catalogue</button></li>
+                    <li><button onclick="switchAdminTab('tab-orders')" id="btn-tab-orders" class="admin-nav w-full flex items-center px-6 py-3 text-sm text-gray-600 hover:bg-gray-50 transition">Gestion Commandes</button></li>
+                    <li><button onclick="switchAdminTab('tab-settings')" id="btn-tab-settings" class="admin-nav w-full flex items-center px-6 py-3 text-sm text-gray-600 hover:bg-gray-50 transition">Paramètres</button></li>
+                </ul>
+            </nav>
+            <!-- Mobile Admin Nav -->
+            <div class="flex md:hidden border-b border-gray-200 bg-white overflow-x-auto hide-scrollbar">
+                <button onclick="switchAdminTab('tab-dashboard')" id="btn-tab-dashboard-mobile" class="flex-1 py-3 text-sm font-medium border-b-2 border-brand-accent text-brand-accent whitespace-nowrap px-3">Tableau de bord</button>
+                <button onclick="switchAdminTab('tab-products')" id="btn-tab-products-mobile" class="flex-1 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 whitespace-nowrap px-3">Catalogue</button>
+                <button onclick="switchAdminTab('tab-orders')" id="btn-tab-orders-mobile" class="flex-1 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 whitespace-nowrap px-3">Commandes</button>
+                <button onclick="switchAdminTab('tab-settings')" id="btn-tab-settings-mobile" class="flex-1 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500 whitespace-nowrap px-3">Paramètres</button>
+            </div>
+            <div class="p-6 border-t border-gray-100 hidden md:block">
+                <button onclick="logoutAdmin()" class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition shadow-sm">Déconnexion</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Admin -->
+        <main class="flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8 w-full bg-slate-50">
+            <!-- Onglet Tableau de bord -->
+            <div id="tab-dashboard" class="admin-tab-content space-y-8">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Tableau de bord</h2>
+                    <p class="text-sm text-gray-500">Voici le résumé de votre activité.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 w-16 h-16 bg-blue-50 rounded-bl-full transition-transform group-hover:scale-110 -z-0"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="bg-blue-100 p-2.5 rounded-xl text-blue-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-sm font-medium text-gray-500 mb-1">Chiffre d'affaires (Livré)</p>
+                            <h3 class="text-2xl font-bold text-gray-900" id="admin-revenue-real">0 FCFA</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 w-16 h-16 bg-yellow-50 rounded-bl-full transition-transform group-hover:scale-110 -z-0"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="bg-yellow-100 p-2.5 rounded-xl text-yellow-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-sm font-medium text-gray-500 mb-1">Requêtes en attente</p>
+                            <h3 class="text-2xl font-bold text-gray-900" id="admin-pending-stat">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 w-16 h-16 bg-brand-light rounded-bl-full transition-transform group-hover:scale-110 -z-0"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="bg-brand-dark p-2.5 rounded-xl text-white">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-sm font-medium text-gray-500 mb-1">Produits actifs (Stock)</p>
+                            <h3 class="text-2xl font-bold text-gray-900" id="admin-product-stat">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute right-0 top-0 w-16 h-16 bg-purple-50 rounded-bl-full transition-transform group-hover:scale-110 -z-0"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="bg-purple-100 p-2.5 rounded-xl text-purple-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            </div>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-sm font-medium text-gray-500 mb-1">Valeur estimée du stock</p>
+                            <h3 class="text-2xl font-bold text-brand-accent" id="admin-revenue-stat">0 FCFA</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dernières Commandes Dashboard -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-8">
+                    <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white">
+                        <h3 class="text-lg font-bold text-gray-900">Dernières requêtes clients</h3>
+                        <button onclick="switchAdminTab('tab-orders')" class="text-brand-accent text-sm font-medium hover:underline">Voir tout</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-100">
+                            <thead class="bg-gray-50/80">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Client</th>
+                                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Produit principal</th>
+                                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th scope="col" class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Montant</th>
+                                    <th scope="col" class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-orders-list-dash" class="bg-white divide-y divide-gray-100">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet Produits -->
+            <div id="tab-products" class="admin-tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-1">Catalogue Produits</h2>
+                    <button onclick="openProductModal()" class="bg-brand-dark text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-accent transition flex items-center shadow-sm w-full sm:w-auto justify-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Ajouter un produit
+                    </button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produit</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Prix & Promo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Catégorie</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-product-list" class="bg-white divide-y divide-gray-200">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet Gestion Commandes -->
+            <div id="tab-orders" class="admin-tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-1">Gestion des Commandes</h2>
+                        <p class="text-sm text-gray-500">Suivez et mettez à jour le statut des commandes clients en temps réel.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client / Contact</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Articles</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Adresse</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Statut & Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-full-orders-list" class="bg-white divide-y divide-gray-200">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet Paramètres -->
+            <div id="tab-settings" class="admin-tab-content hidden space-y-6 max-w-3xl">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-1">Paramètres</h2>
+                    <p class="text-sm text-gray-500">Ces réglages contrôlent le contenu affiché sur le site public.</p>
+                </div>
+
+                <!-- Boutique -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-4">
+                    <h3 class="font-bold text-gray-900">Boutique</h3>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Titre principal (hero)</label>
+                        <input type="text" id="set-hero-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Sous-titre (hero)</label>
+                        <input type="text" id="set-hero-subtitle" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Adresse physique de la boutique</label>
+                        <input type="text" id="set-address" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-4">
+                    <h3 class="font-bold text-gray-900">Contact</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Numéro WhatsApp (commandes)</label>
+                            <input type="text" id="set-whatsapp" placeholder="2290147527920" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                            <p class="text-xs text-gray-400 mt-1">Format international (ex: 2290147527920)</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Téléphone secondaire (affiché)</label>
+                            <input type="text" id="set-phone-secondary" placeholder="+229 01 51 18 07 44" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Livraison -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-4">
+                    <h3 class="font-bold text-gray-900">Livraison</h3>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Livraison gratuite à partir de (FCFA)</label>
+                        <input type="number" id="set-free-shipping" placeholder="150000" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                        <p class="text-xs text-gray-400 mt-1">0 = fonctionnalité désactivée</p>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-4">
+                    <h3 class="font-bold text-gray-900">Modèle du message WhatsApp</h3>
+                    <div>
+                        <p class="text-xs text-gray-500 mb-2">Variables : {nom}, {tel}, {adresse}, {ville}, {items}, {total}, {promo}</p>
+                        <textarea id="set-whatsapp-template" rows="6" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none font-mono"></textarea>
+                    </div>
+                </div>
+
+                <!-- Gestion des Codes Promo -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-4">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-bold text-gray-900">Codes Promo</h3>
+                        <button onclick="addPromoCodeRow()" class="text-xs bg-brand-accent text-white px-3 py-1.5 rounded hover:bg-brand-accentHover transition shadow-sm">Ajouter</button>
+                    </div>
+                    <div id="settings-promo-list" class="space-y-3">
+                        <!-- Généré dynamiquement -->
+                    </div>
+                </div>
+
+                <!-- Gestion des Services (Teasers d'Accueil) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-6">
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-1">Services & Offres (Accueil)</h3>
+                        <p class="text-xs text-gray-500">Gérez le contenu des 4 cartes de services affichées sur la page d'accueil.</p>
+                    </div>
+                    
+                    <div class="space-y-4 border border-gray-100 rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-bold text-sm text-brand-dark flex items-center"><svg class="w-4 h-4 mr-1.5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> Carte 1 : Crédit</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Titre</label>
+                            <input type="text" id="set-srv-credit-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Description Courte</label>
+                            <textarea id="set-srv-credit-short" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Texte "Vos Engagements" (Détail Modal)</label>
+                            <textarea id="set-srv-credit-detail" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 border border-gray-100 rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-bold text-sm text-gray-900">Carte 2 : Électroménager</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Titre</label>
+                            <input type="text" id="set-srv-electro-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Description Courte</label>
+                            <textarea id="set-srv-electro-short" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Catégorie d'articles à afficher</label>
+                            <select id="set-srv-electro-cat" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white admin-cat-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 border border-gray-100 rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-bold text-sm text-gray-900">Carte 3 : Aménagement</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Titre</label>
+                            <input type="text" id="set-srv-amenagement-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Description Courte</label>
+                            <textarea id="set-srv-amenagement-short" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Catégorie d'articles à afficher</label>
+                            <select id="set-srv-amenagement-cat" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white admin-cat-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 border border-green-100 rounded-lg p-4 bg-green-50/30">
+                        <h4 class="font-bold text-sm text-green-700">Carte 4 : Livraison</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Titre</label>
+                            <input type="text" id="set-srv-livraison-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Description Courte</label>
+                            <textarea id="set-srv-livraison-short" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Détails (affichés dans la modale)</label>
+                            <textarea id="set-srv-livraison-detail" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sécurité & Maintenance -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-4">
+                    <h3 class="font-bold text-gray-900">Sécurité & Maintenance</h3>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">Activer le mode maintenance</p>
+                            <p class="text-xs text-gray-500">Affiche une page d'attente pour les clients. Terra PRO reste accessible.</p>
+                        </div>
+                        <button type="button" id="set-maintenance-toggle" onclick="toggleMaintenanceUI()" class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors bg-gray-300">
+                            <span id="set-maintenance-knob" class="inline-block h-4 w-4 transform translate-x-1 rounded-full bg-white transition-transform"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pb-8">
+                    <span id="settings-saved-msg" class="text-sm text-green-600 font-medium hidden">Enregistré ✓</span>
+                    <button onclick="saveSettings()" id="btn-save-settings" class="bg-brand-dark text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-black transition shadow-sm">Enregistrer les paramètres</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL : Ajout/Modification Produit Admin -->
+    <div id="admin-product-modal" class="modal-overlay fixed inset-0 z-[80] flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[95vh]">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+                <h3 id="modal-title" class="font-bold text-lg text-brand-dark">Ajouter un produit</h3>
+                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600 transition bg-white rounded-full p-1.5 shadow-sm"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-grow space-y-4">
+                <input type="hidden" id="prod-id">
+                
+                <div id="matelas-quick-fill-container" class="mb-2 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+                    <label class="block text-xs font-bold text-brand-accent mb-2">⚡ Remplissage Rapide (Catalogue Matelas)</label>
+                    <select id="quick-template" onchange="applyTemplate()" class="w-full border border-blue-200 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white text-gray-700 font-medium">
+                        <option value="">-- Choisir un modèle de matelas --</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nom du produit *</label>
+                    <input type="text" id="prod-name" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Description</label>
+                    <textarea id="prod-desc" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Prix de vente (FCFA) *</label>
+                        <input type="number" id="prod-price" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Ancien Prix Barré (Optionnel)</label>
+                        <input type="number" id="prod-old-price" placeholder="Ex: 65000" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Catégorie *</label>
+                        <select id="prod-category" onchange="toggleQuickFillVisibility()" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                            <option value="Matelas">Matelas</option>
+                            <option value="TV LG Smart">TV LG Smart</option>
+                            <option value="Siège Balançoire">Siège Balançoire</option>
+                            <option value="Table à Manger">Table à Manger</option>
+                            <option value="Rideaux & Draps">Rideaux & Draps</option>
+                            <option value="Woofers">Woofers</option>
+                            <option value="Lits Modernes HDF">Lits Modernes HDF</option>
+                            <option value="Armoire">Armoire</option>
+                            <option value="Lits Bourrés">Lits Bourrés</option>
+                            <option value="Pose TV/Guéridon">Pose TV/Guéridon</option>
+                            <option value="Canapé">Canapé</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Statut *</label>
+                        <select id="prod-status" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                            <option value="En stock">En stock</option>
+                            <option value="Rupture">Rupture</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Variantes (optionnel)</label>
+                    <input type="text" id="prod-variante" placeholder="Ex: Gris, Bleu, Noir" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none">
+                    <p class="text-xs text-gray-400 mt-1">Séparées par des virgules. Laisser vide si le produit n'a pas de variantes.</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Image du produit</label>
+                    <input type="file" id="prod-image-file" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                    <input type="hidden" id="prod-image-url"> 
+                    <p id="upload-status" class="text-xs text-brand-accent font-medium mt-2 hidden animate-pulse">📤 Compression et sauvegarde de l'image...</p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
+                <button onclick="closeProductModal()" class="px-4 py-2 border border-gray-300 text-gray-600 bg-white rounded-lg text-sm font-medium shadow-sm hover:bg-gray-50">Annuler</button>
+                <button id="btn-save-product" onclick="saveProduct()" class="px-4 py-2 bg-brand-dark text-white rounded-lg text-sm font-bold shadow-md hover:bg-black transition">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL : Custom Confirm (remplace window.confirm) -->
+    <div id="confirm-modal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full text-center">
+            <h3 id="confirm-title" class="font-bold text-lg text-gray-900 mb-2">Confirmation</h3>
+            <p id="confirm-msg" class="text-gray-500 text-sm mb-6">Êtes-vous sûr de vouloir continuer ?</p>
+            <div class="flex justify-center gap-3">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition">Annuler</button>
+                <button id="confirm-btn-yes" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 transition">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteneur de Notifications (Toasts) -->
+    <div id="toast-container" class="flex flex-col gap-2"></div>
+
+    <!-- Template Reçu PDF - Caché par défaut -->
+    <div id="recu-template" style="display:none; width: 480px; padding: 32px; font-family: 'Plus Jakarta Sans', Arial, sans-serif; background: white; color: #111827;">
+        <div style="display:flex; align-items:baseline; margin-bottom: 4px;">
+            <span style="font-weight:900; font-size:26px; letter-spacing:-0.02em;">Terra</span>
+            <span style="font-size:14px; font-weight:bold; margin-left:2px;">°</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom: 20px;">
+            <div style="height:3px; width:40px; background:#111827;"></div>
+            <span style="color:#2563EB; font-weight:bold; font-size:12px; letter-spacing:0.05em;">MARKET</span>
+        </div>
+        <h2 style="font-size:18px; margin:0 0 4px 0;">Reçu de commande #<span id="recu-num-cmd"></span></h2>
+        <p style="font-size:12px; color:#6B7280; margin:0 0 16px 0;">Date : <span id="recu-date"></span></p>
+        <hr style="border:none; border-top:1px solid #E5E7EB; margin: 12px 0;">
+        <p style="font-size:13px; margin:2px 0;"><strong>Client :</strong> <span id="recu-client-nom"></span></p>
+        <p style="font-size:13px; margin:2px 0;"><strong>Téléphone :</strong> <span id="recu-client-tel"></span></p>
+        <p style="font-size:13px; margin:2px 0;"><strong>Adresse :</strong> <span id="recu-client-adresse"></span></p>
+        <hr style="border:none; border-top:1px solid #E5E7EB; margin: 12px 0;">
+        <h3 style="font-size:14px; margin: 0 0 8px 0;">Articles</h3>
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <tbody id="recu-liste-articles"></tbody>
+        </table>
+        <hr style="border:none; border-top:1px solid #E5E7EB; margin: 12px 0;">
+        <h3 id="recu-total" style="font-size:16px; text-align:right; color:#2563EB; margin:0;">Total : 0 FCFA</h3>
+        <p style="font-size:11px; color:#9CA3AF; text-align:center; margin-top:32px;">Terra Market — Womey Gbègnigan, Abomey-Calavi — Merci pour votre confiance !</p>
+    </div>
+
+    <!-- FIREBASE & LOGIQUE METIER -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvU2Vb7JyWy5HXPCXm89g8oZTzN6KfCUA",
+            authDomain: "terra-market-87f8b.firebaseapp.com",
+            projectId: "terra-market-87f8b",
+            storageBucket: "terra-market-87f8b.firebasestorage.app",
+            messagingSenderId: "1058141371550",
+            appId: "1:1058141371550:web:b3403f37cdfdd0a1020f8f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'terra-market-core';
+
+        let user = null;
+        let isAdmin = false;
+        let products = [];
+        let orders = [];
+        let cart = JSON.parse(localStorage.getItem('terraCart')) || []; 
+        let cartSubtotal = 0;
+        let cartTotal = 0;
+        let appliedDiscount = 0;
+        let currentPromo = null;
+        let currentActiveCategory = "";
+
+        const DEFAULT_WHATSAPP_TEMPLATE = "Bonjour Terra Market 👋,\nJe souhaite valider ma commande :\n\n*--- MES INFORMATIONS ---*\n👤 Nom : {nom}\n📞 Tél : {tel}\n📍 Adresse : {adresse}, {ville}\n\n*--- MON PANIER ---*\n{items}\n{promo}\n*💰 TOTAL À PAYER : {total}*\n\nMerci !";
+
+        // Paramètres par défaut avec la configuration dynamique des services
+        let settings = {
+            heroTitle: "Le confort que vous méritez",
+            heroSubtitle: "Équipez votre intérieur dès aujourd'hui et payez progressivement à votre rythme.",
+            address: "Womey Gbègnigan, Abomey-Calavi",
+            whatsapp: "2290147527920",
+            phoneSecondary: "+229 01 51 18 07 44",
+            freeShippingThreshold: 0,
+            whatsappTemplate: DEFAULT_WHATSAPP_TEMPLATE,
+            maintenanceMode: false,
+            promoCodes: [
+                { code: 'TERRA10', type: 'percent', value: 10 },
+                { code: 'SOLDE', type: 'fixed', value: 5000 },
+                { code: 'LIVRAISON', type: 'fixed', value: 2000 }
+            ],
+            services: {
+                credit: { title: "Meubles à crédit", shortDesc: "Repartez avec vos meubles dès aujourd'hui et étalez vos paiements en toute sérénité.", detailedDesc: "En signant le contrat, vous vous engagez à respecter les dates d'échéance convenues et à conserver les articles en bon état. Tout retard peut entraîner des pénalités." },
+                electro: { title: "Électroménager", shortDesc: "Découvrez notre gamme de téléviseurs et d'appareils de dernière génération.", linkedCategory: "TV LG Smart" },
+                amenagement: { title: "Aménagement", shortDesc: "Des meubles modernes, lits luxueux et salons élégants pour sublimer votre intérieur.", linkedCategory: "Canapé" },
+                livraison: { title: "Livraison à domicile", shortDesc: "Profitez d'un service de livraison rapide et soigné directement à votre adresse.", detailedDesc: "Nous offrons un service de livraison sécurisé. Contactez-nous pour connaître les tarifs selon votre zone." }
+            }
+        };
+
+        // Gestion Modale de confirmation unifiée (remplace window.confirm)
+        let confirmAction = null;
+        window.openConfirmModal = (title, msg, onConfirm) => {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-msg').innerText = msg;
+            confirmAction = onConfirm;
+            document.getElementById('confirm-modal').classList.add('active');
+        };
+        window.closeConfirmModal = () => {
+            document.getElementById('confirm-modal').classList.remove('active');
+            confirmAction = null;
+        };
+        document.getElementById('confirm-btn-yes').addEventListener('click', () => {
+            if(confirmAction) confirmAction();
+            closeConfirmModal();
+        });
+
+        // BASE DE DONNEES DES MATELAS POUR REMPLISSAGE RAPIDE
+        const MATELAS_TEMPLATES = [
+            { name: "Matelas 1 Place - Spécial Foam (Ep. 15)", price: 22000, desc: "Modèle Spécial Foam" },
+            { name: "Matelas 1 Place - Spécial Foam (Ep. 20)", price: 32000, desc: "Modèle Spécial Foam" },
+            { name: "Matelas 1 Place - Ghana Ordinaire (Ep. 15)", price: 35000, desc: "Modèle Ghana Ordinaire" },
+            { name: "Matelas 1 Place - Ghana Ordinaire (Ep. 20)", price: 39000, desc: "Modèle Ghana Ordinaire" },
+            { name: "Matelas 1 Place - Ghana Semi-Dur (Ep. 15)", price: 39000, desc: "Modèle Ghana Semi-Dur" },
+            { name: "Matelas 1 Place - Ghana Semi-Dur (Ep. 20)", price: 45000, desc: "Modèle Ghana Semi-Dur" },
+            { name: "Matelas 1 Place - Ghana Dur (Ep. 15)", price: 47000, desc: "Modèle Ghana Dur" },
+            { name: "Matelas 1 Place - Ghana Dur (Ep. 20)", price: 52000, desc: "Modèle Ghana Dur" },
+            { name: "Matelas 1 Place - Bénin Confort (Ep. 15)", price: 57000, desc: "Modèle Bénin Confort" },
+            { name: "Matelas 1 Place - Bénin Confort (Ep. 20)", price: 62000, desc: "Modèle Bénin Confort" },
+
+            { name: "Matelas 2 Places - Spécial Foam (Ep. 15)", price: 35000, desc: "Modèle Spécial Foam" },
+            { name: "Matelas 2 Places - Spécial Foam (Ep. 20)", price: 52000, desc: "Modèle Spécial Foam" },
+            { name: "Matelas 2 Places - Super Mattress (Ep. 18)", price: 42000, desc: "Modèle Super Mattress" },
+            { name: "Matelas 2 Places - Ghana Conf. Ordinaire (Ep. 15)", price: 47000, desc: "Modèle Ghana Confort Ordinaire" },
+            { name: "Matelas 2 Places - Ghana Conf. Ordinaire (Ep. 20)", price: 57000, desc: "Modèle Ghana Confort Ordinaire" },
+            { name: "Matelas 2 Places - Ghana Conf. Semi-Dur (Ep. 15)", price: 67000, desc: "Modèle Ghana Confort Semi-Dur" },
+            { name: "Matelas 2 Places - Ghana Conf. Semi-Dur (Ep. 20)", price: 77000, desc: "Modèle Ghana Confort Semi-Dur" },
+            { name: "Matelas 2 Places - Ghana Conf. Dur (Ep. 15)", price: 87000, desc: "Ghana Confort Dur ⭐ Garantie 5 ans" },
+            { name: "Matelas 2 Places - Ghana Conf. Dur (Ep. 20)", price: 107000, desc: "Ghana Confort Dur ⭐ Garantie 5 ans" },
+            { name: "Matelas 2 Places - Bénin Conf. Semi-Dur (Ep. 15)", price: 82000, desc: "Bénin Confort Semi-Dur ⭐ Garantie 5 ans" },
+            { name: "Matelas 2 Places - Bénin Conf. Semi-Dur (Ep. 20)", price: 92000, desc: "Bénin Confort Semi-Dur ⭐ Garantie 5 ans" },
+            { name: "Matelas 2 Places - Bénin Conf. Dur (Ep. 15)", price: 102000, desc: "Bénin Confort Dur ⭐ Garantie 10 ans" },
+            { name: "Matelas 2 Places - Bénin Conf. Dur (Ep. 20)", price: 112000, desc: "Bénin Confort Dur ⭐ Garantie 10 ans" },
+            { name: "Matelas 2 Pl. - Médical Bénin Conf. (Ep. 15)", price: 122000, desc: "Médical Bénin Confort ⭐ Garantie 10 ans" },
+            { name: "Matelas 2 Pl. - Médical Bénin Conf. (Ep. 20)", price: 142000, desc: "Médical Bénin Confort ⭐ Garantie 10 ans" },
+
+            { name: "Matelas 3 Places - Ghana Conf. Semi-Dur (Ep. 15)", price: 77000, desc: "Ghana Confort Semi-Dur" },
+            { name: "Matelas 3 Places - Ghana Conf. Semi-Dur (Ep. 20)", price: 87000, desc: "Ghana Confort Semi-Dur" },
+            { name: "Matelas 3 Places - Ghana Conf. Dur (Ep. 15)", price: 97000, desc: "Ghana Confort Dur ⭐ Garantie 5 ans" },
+            { name: "Matelas 3 Places - Ghana Conf. Dur (Ep. 20)", price: 107000, desc: "Ghana Confort Dur ⭐ Garantie 5 ans" },
+            { name: "Matelas 3 Places - Bénin Conf. Semi-Dur (Ep. 15)", price: 117000, desc: "Bénin Confort Semi-Dur ⭐ Garantie 5 ans" },
+            { name: "Matelas 3 Places - Bénin Conf. Semi-Dur (Ep. 20)", price: 127000, desc: "Bénin Confort Semi-Dur ⭐ Garantie 5 ans" },
+            { name: "Matelas 3 Places - Bénin Conf. Dur (Ep. 15)", price: 137000, desc: "Bénin Confort Dur ⭐ Garantie 10 ans" },
+            { name: "Matelas 3 Places - Bénin Conf. Dur (Ep. 20)", price: 147000, desc: "Bénin Confort Dur ⭐ Garantie 10 ans" },
+            { name: "Matelas 3 Pl. - Médical Bénin Conf. (Ep. 15)", price: 157000, desc: "Médical Bénin Confort ⭐ Garantie 10 ans" },
+            { name: "Matelas 3 Pl. - Médical Bénin Conf. (Ep. 20)", price: 167000, desc: "Médical Bénin Confort ⭐ Garantie 10 ans" }
+        ];
+
+        function initTemplates() {
+            const select = document.getElementById('quick-template');
+            if(!select) return;
+            let currentGroup = "";
+            let optgroup = null;
+            MATELAS_TEMPLATES.forEach((tmpl, index) => {
+                let groupName = tmpl.name.includes("1 Place") ? "🛏️ MATELAS 1 PLACE" : 
+                                tmpl.name.includes("2 Pl") ? "🛏️ MATELAS 2 PLACES" : "🛏️ MATELAS 3 PLACES";
+                if (currentGroup !== groupName) {
+                    currentGroup = groupName;
+                    optgroup = document.createElement('optgroup');
+                    optgroup.label = groupName;
+                    select.appendChild(optgroup);
+                }
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.text = `${tmpl.name} - ${formatPrice(tmpl.price)}`;
+                optgroup.appendChild(opt);
+            });
+        }
+
+        window.applyTemplate = () => {
+            const val = document.getElementById('quick-template').value;
+            if(val === "") return;
+            const tmpl = MATELAS_TEMPLATES[val];
+            document.getElementById('prod-name').value = tmpl.name;
+            document.getElementById('prod-price').value = tmpl.price;
+            document.getElementById('prod-old-price').value = '';
+            document.getElementById('prod-desc').value = tmpl.desc;
+            document.getElementById('prod-category').value = 'Matelas';
+            window.toggleQuickFillVisibility();
+            showToast("Formulaire auto-rempli avec succès !", "success");
+        };
+
+        window.toggleQuickFillVisibility = () => {
+            const category = document.getElementById('prod-category').value;
+            const container = document.getElementById('matelas-quick-fill-container');
+            if (container) {
+                if (category === 'Matelas') container.classList.remove('hidden');
+                else container.classList.add('hidden');
+            }
+        };
+
+        // FONCTION DE COMPRESSION D'IMAGE (Canvas to Base64)
+        function compressImage(file, maxWidth = 800, quality = 0.75) {
+            return new Promise((resolve, reject) => {
+                if (!file) {
+                    reject(new Error("Aucun fichier fourni"));
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = event => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.fillRect(0, 0, width, height);
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', quality)); // Renvoie une Data URL base64 optimisée
+                    };
+                    img.onerror = error => reject(new Error("Erreur de lecture de l'image."));
+                    img.src = event.target.result;
+                };
+                reader.onerror = error => reject(new Error("Erreur lors de la lecture du fichier."));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // INITIALISATION FIREBASE
+        async function initFirebase() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
+                        const userCredential = await signInWithCustomToken(auth, __initial_auth_token);
+                        user = userCredential.user;
+                    } catch (tokenErr) {
+                        const userCredential = await signInAnonymously(auth);
+                        user = userCredential.user;
+                    }
+                } else {
+                    const userCredential = await signInAnonymously(auth);
+                    user = userCredential.user;
+                }
+                
+                // Chargement en temps réel des produits
+                const productsRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+                onSnapshot(productsRef, (snapshot) => {
+                    products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderCategories();
+                    populateAdminCategorySelects();
+                    if(document.getElementById('admin-view').classList.contains('active')) renderAdminProducts();
+                    if (!document.getElementById('category-detail-view').classList.contains('hidden') && currentActiveCategory) {
+                        renderCategoryProducts(currentActiveCategory);
+                    }
+                    const searchInput = document.getElementById('global-search');
+                    if(searchInput && searchInput.value.trim() !== '') {
+                        handleGlobalSearch(searchInput.value);
+                    }
+                }, (error) => console.error("Erreur Firestore (Produits):", error));
+
+                // Chargement en temps réel des commandes
+                const ordersRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
+                onSnapshot(ordersRef, (snapshot) => {
+                    orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    orders.sort((a, b) => b.createdAt - a.createdAt);
+                    if(document.getElementById('admin-view').classList.contains('active')) {
+                        renderOrdersDash();
+                        renderOrdersTableFull();
+                        updateDashboardStats();
+                    }
+                }, (error) => console.error("Erreur Firestore (Commandes):", error));
+
+                // Chargement en temps réel des paramètres de la boutique
+                const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'store');
+                onSnapshot(settingsRef, (snap) => {
+                    if (snap.exists()) {
+                        settings = { ...settings, ...snap.data() };
+                    }
+                    applySettingsToStorefront();
+                    if (document.getElementById('tab-settings') && !document.getElementById('tab-settings').classList.contains('hidden')) {
+                        renderSettingsForm();
+                    }
+                }, (error) => console.error("Erreur Firestore (Paramètres):", error));
+
+            } catch (error) {
+                console.error("Erreur d'authentification Firebase:", error);
+                showToast("Erreur de connexion au serveur", "error");
+            }
+        }
+
+        // APPLICATION DES PARAMETRES (Storefront & Admin)
+        function applySettingsToStorefront() {
+            const heroTitleEl = document.getElementById('hero-title');
+            if (heroTitleEl) heroTitleEl.innerText = settings.heroTitle;
+            const heroSubEl = document.getElementById('hero-subtitle');
+            if (heroSubEl) heroSubEl.innerText = settings.heroSubtitle;
+            const addrEl = document.getElementById('store-address-text');
+            if (addrEl) addrEl.innerText = settings.address;
+
+            const waDigits = (settings.whatsapp || '').replace(/[^0-9]/g, '');
+            const waFloatBtn = document.getElementById('whatsapp-float-btn');
+            if (waFloatBtn && waDigits) waFloatBtn.href = `https://wa.me/${waDigits}`;
+            const waMaintenanceLink = document.getElementById('maintenance-whatsapp-link');
+            if (waMaintenanceLink && waDigits) waMaintenanceLink.href = `https://wa.me/${waDigits}`;
+            
+            const phonePrimaryEl = document.getElementById('store-phone-primary');
+            if (phonePrimaryEl && waDigits) {
+                phonePrimaryEl.href = `tel:+${waDigits}`;
+                phonePrimaryEl.innerText = '+' + waDigits.replace(/(\d{3})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5 $6');
+            }
+            const phoneSecondaryEl = document.getElementById('store-phone-secondary');
+            if (phoneSecondaryEl) {
+                phoneSecondaryEl.innerText = settings.phoneSecondary;
+                const secDigits = (settings.phoneSecondary || '').replace(/[^0-9]/g, '');
+                if (secDigits) phoneSecondaryEl.href = `tel:+${secDigits}`;
+            }
+
+            // Mise à jour des Teasers d'Accueil (Services)
+            const s = settings.services || {};
+            if(document.getElementById('front-service-credit-title')) {
+                document.getElementById('front-service-credit-title').innerText = s.credit?.title || "Meubles à crédit";
+                document.getElementById('front-service-credit-desc').innerText = s.credit?.shortDesc || "";
+            }
+            if(document.getElementById('front-service-electro-title')) {
+                document.getElementById('front-service-electro-title').innerText = s.electro?.title || "Électroménager";
+                document.getElementById('front-service-electro-desc').innerText = s.electro?.shortDesc || "";
+            }
+            if(document.getElementById('front-service-amenagement-title')) {
+                document.getElementById('front-service-amenagement-title').innerText = s.amenagement?.title || "Aménagement";
+                document.getElementById('front-service-amenagement-desc').innerText = s.amenagement?.shortDesc || "";
+            }
+            if(document.getElementById('front-service-livraison-title')) {
+                document.getElementById('front-service-livraison-title').innerText = s.livraison?.title || "Livraison à domicile";
+                document.getElementById('front-service-livraison-desc').innerText = s.livraison?.shortDesc || "";
+            }
+
+            const maintenanceScreen = document.getElementById('maintenance-screen');
+            if (maintenanceScreen) {
+                const showMaintenance = !!settings.maintenanceMode && !isAdmin;
+                maintenanceScreen.classList.toggle('hidden', !showMaintenance);
+            }
+        }
+
+        function renderSettingsForm() {
+            document.getElementById('set-hero-title').value = settings.heroTitle || '';
+            document.getElementById('set-hero-subtitle').value = settings.heroSubtitle || '';
+            document.getElementById('set-address').value = settings.address || '';
+            document.getElementById('set-whatsapp').value = settings.whatsapp || '';
+            document.getElementById('set-phone-secondary').value = settings.phoneSecondary || '';
+            document.getElementById('set-free-shipping').value = settings.freeShippingThreshold || 0;
+            document.getElementById('set-whatsapp-template').value = settings.whatsappTemplate || DEFAULT_WHATSAPP_TEMPLATE;
+            setMaintenanceToggleUI(!!settings.maintenanceMode);
+            renderPromoCodesList();
+
+            // Remplissage Services Admin
+            const s = settings.services || {};
+            document.getElementById('set-srv-credit-title').value = s.credit?.title || '';
+            document.getElementById('set-srv-credit-short').value = s.credit?.shortDesc || '';
+            document.getElementById('set-srv-credit-detail').value = s.credit?.detailedDesc || '';
+            
+            document.getElementById('set-srv-electro-title').value = s.electro?.title || '';
+            document.getElementById('set-srv-electro-short').value = s.electro?.shortDesc || '';
+            document.getElementById('set-srv-electro-cat').value = s.electro?.linkedCategory || '';
+            
+            document.getElementById('set-srv-amenagement-title').value = s.amenagement?.title || '';
+            document.getElementById('set-srv-amenagement-short').value = s.amenagement?.shortDesc || '';
+            document.getElementById('set-srv-amenagement-cat').value = s.amenagement?.linkedCategory || '';
+            
+            document.getElementById('set-srv-livraison-title').value = s.livraison?.title || '';
+            document.getElementById('set-srv-livraison-short').value = s.livraison?.shortDesc || '';
+            document.getElementById('set-srv-livraison-detail').value = s.livraison?.detailedDesc || '';
+        }
+
+        function populateAdminCategorySelects() {
+            const selects = document.querySelectorAll('.admin-cat-select');
+            const cats = [...new Set(products.map(p => p.category))].sort();
+            const optionsHtml = `<option value="">-- Aucune catégorie liée --</option>` + 
+                                cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            selects.forEach(sel => {
+                const currentVal = sel.value;
+                sel.innerHTML = optionsHtml;
+                if(cats.includes(currentVal)) sel.value = currentVal;
+            });
+        }
+
+        function renderPromoCodesList() {
+            const list = document.getElementById('settings-promo-list');
+            if(!list) return;
+            list.innerHTML = '';
+            const codes = settings.promoCodes || [];
+            if(codes.length === 0) {
+                list.innerHTML = '<p class="text-xs text-gray-500 italic">Aucun code promo configuré.</p>';
+                return;
+            }
+            codes.forEach((p, idx) => {
+                list.innerHTML += `
+                    <div class="flex items-center gap-2 promo-row bg-gray-50 p-2 rounded border border-gray-100" data-idx="${idx}">
+                        <input type="text" class="promo-code-val border border-gray-300 rounded px-2 py-1 text-sm w-1/3 uppercase font-medium focus:ring-brand-accent focus:outline-none" value="${p.code}" placeholder="CODE">
+                        <select class="promo-type-val border border-gray-300 rounded px-2 py-1 text-sm w-1/3 bg-white focus:ring-brand-accent focus:outline-none">
+                            <option value="percent" ${p.type === 'percent' ? 'selected' : ''}>Pourcentage (%)</option>
+                            <option value="fixed" ${p.type === 'fixed' ? 'selected' : ''}>Fixe (FCFA)</option>
+                        </select>
+                        <input type="number" class="promo-value-val border border-gray-300 rounded px-2 py-1 text-sm w-1/4 focus:ring-brand-accent focus:outline-none" value="${p.value}" placeholder="Valeur">
+                        <button onclick="removePromoCodeRow(this)" class="text-red-500 hover:text-red-700 p-1.5 ml-auto bg-red-50 rounded" title="Supprimer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        window.addPromoCodeRow = () => {
+            if(!settings.promoCodes) settings.promoCodes = [];
+            settings.promoCodes.push({ code: '', type: 'percent', value: 0 });
+            renderPromoCodesList();
+        };
+
+        window.removePromoCodeRow = (btn) => {
+            const row = btn.closest('.promo-row');
+            const idx = row.getAttribute('data-idx');
+            settings.promoCodes.splice(idx, 1);
+            renderPromoCodesList();
+        };
+
+        function setMaintenanceToggleUI(on) {
+            const toggle = document.getElementById('set-maintenance-toggle');
+            const knob = document.getElementById('set-maintenance-knob');
+            if (!toggle || !knob) return;
+            toggle.dataset.on = on ? '1' : '0';
+            toggle.classList.toggle('bg-brand-accent', on);
+            toggle.classList.toggle('bg-gray-300', !on);
+            knob.style.transform = on ? 'translateX(22px)' : 'translateX(4px)';
+        }
+
+        window.toggleMaintenanceUI = () => {
+            const toggle = document.getElementById('set-maintenance-toggle');
+            const isOn = toggle.dataset.on === '1';
+            setMaintenanceToggleUI(!isOn);
+        };
+
+        window.saveSettings = async () => {
+            if (!isAdmin) { showToast("Vous devez être connecté en tant qu'administrateur.", "error"); return; }
+            const btn = document.getElementById('btn-save-settings');
+            const savedMsg = document.getElementById('settings-saved-msg');
+            btn.disabled = true;
+            btn.innerText = "Enregistrement...";
+            savedMsg.classList.add('hidden');
+            try {
+                const promoRows = document.querySelectorAll('.promo-row');
+                const newPromoCodes = [];
+                promoRows.forEach(row => {
+                    const code = row.querySelector('.promo-code-val').value.trim().toUpperCase();
+                    const type = row.querySelector('.promo-type-val').value;
+                    const value = parseFloat(row.querySelector('.promo-value-val').value) || 0;
+                    if(code) newPromoCodes.push({ code, type, value });
+                });
+
+                const newSettings = {
+                    heroTitle: document.getElementById('set-hero-title').value.trim(),
+                    heroSubtitle: document.getElementById('set-hero-subtitle').value.trim(),
+                    address: document.getElementById('set-address').value.trim(),
+                    whatsapp: document.getElementById('set-whatsapp').value.trim(),
+                    phoneSecondary: document.getElementById('set-phone-secondary').value.trim(),
+                    freeShippingThreshold: parseFloat(document.getElementById('set-free-shipping').value) || 0,
+                    whatsappTemplate: document.getElementById('set-whatsapp-template').value,
+                    maintenanceMode: document.getElementById('set-maintenance-toggle').dataset.on === '1',
+                    promoCodes: newPromoCodes,
+                    services: {
+                        credit: {
+                            title: document.getElementById('set-srv-credit-title').value.trim(),
+                            shortDesc: document.getElementById('set-srv-credit-short').value.trim(),
+                            detailedDesc: document.getElementById('set-srv-credit-detail').value.trim()
+                        },
+                        electro: {
+                            title: document.getElementById('set-srv-electro-title').value.trim(),
+                            shortDesc: document.getElementById('set-srv-electro-short').value.trim(),
+                            linkedCategory: document.getElementById('set-srv-electro-cat').value
+                        },
+                        amenagement: {
+                            title: document.getElementById('set-srv-amenagement-title').value.trim(),
+                            shortDesc: document.getElementById('set-srv-amenagement-short').value.trim(),
+                            linkedCategory: document.getElementById('set-srv-amenagement-cat').value
+                        },
+                        livraison: {
+                            title: document.getElementById('set-srv-livraison-title').value.trim(),
+                            shortDesc: document.getElementById('set-srv-livraison-short').value.trim(),
+                            detailedDesc: document.getElementById('set-srv-livraison-detail').value.trim()
+                        }
+                    }
+                };
+                const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'store');
+                await setDoc(settingsRef, newSettings, { merge: true });
+                showToast("Paramètres enregistrés", "success");
+                savedMsg.classList.remove('hidden');
+                setTimeout(() => savedMsg.classList.add('hidden'), 2500);
+            } catch (e) {
+                console.error(e);
+                showToast("Erreur lors de l'enregistrement des paramètres", "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Enregistrer les paramètres";
+            }
+        };
+
+        // GESTION DU TABLEAU DE BORD (STATS & COMMANDES)
+        function updateDashboardStats() {
+            let activeCount = products.filter(p => p.status === 'En stock').length;
+            let pendingCount = orders.filter(o => o.status === 'En attente').length;
+            let revenue = orders.filter(o => o.status === 'Livré').reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0);
+            let stockValue = products.filter(p => p.status === 'En stock').reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0);
+
+            const elProduct = document.getElementById('admin-product-stat');
+            if(elProduct) elProduct.innerText = activeCount;
+            const elPending = document.getElementById('admin-pending-stat');
+            if(elPending) elPending.innerText = pendingCount;
+            const elRev = document.getElementById('admin-revenue-real');
+            if(elRev) elRev.innerText = formatPrice(revenue);
+            const elStockVal = document.getElementById('admin-revenue-stat');
+            if(elStockVal) elStockVal.innerText = formatPrice(stockValue);
+        }
+
+        function renderOrdersDash() {
+            const tbody = document.getElementById('admin-orders-list-dash');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Aucune commande pour le moment</td></tr>`;
+                return;
+            }
+            orders.slice(0, 5).forEach(order => {
+                const date = new Date(order.createdAt).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+                const mainItem = order.items && order.items.length > 0 ? order.items[0].name : 'Commande';
+                const initials = order.nom ? order.nom.substring(0, 2).toUpperCase() : '??';
+                let statusClass = 'bg-yellow-100 text-yellow-800';
+                if (order.status === 'Livré') statusClass = 'bg-green-100 text-green-800';
+                if (order.status === 'En préparation') statusClass = 'bg-blue-100 text-blue-800';
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50/50 transition";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="h-9 w-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 font-bold text-sm mr-3 shrink-0">${initials}</div>
+                            <div class="text-sm font-medium text-gray-900">${order.nom}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 line-clamp-1 max-w-[200px]" title="${mainItem}">${mainItem}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${date}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 text-right">${formatPrice(order.total)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${statusClass}">${order.status}</span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderOrdersTableFull() {
+            const tbody = document.getElementById('admin-full-orders-list');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Aucune commande enregistrée</td></tr>`;
+                return;
+            }
+
+            orders.forEach(order => {
+                const date = new Date(order.createdAt).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                let itemsList = '';
+                if(order.items) {
+                    order.items.forEach(i => { itemsList += `<div class="text-xs text-gray-600">▪️ ${i.quantity}x ${i.name}${i.variante ? ' ('+i.variante+')' : ''}</div>`; });
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-bold text-gray-900">${order.nom}</div>
+                        <a href="tel:${order.tel}" class="text-xs text-brand-accent font-semibold hover:underline">${order.tel}</a>
+                        <div class="text-[10px] text-gray-400 mt-0.5">${date}</div>
+                    </td>
+                    <td class="px-6 py-4 max-w-xs">${itemsList}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${order.adresse}, <span class="font-semibold">${order.ville}</span></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 text-right">${formatPrice(order.total)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center space-y-2">
+                        <select onchange="updateOrderStatus('${order.id}', this.value)" class="text-xs border border-gray-300 rounded px-2 py-1 bg-white font-medium mb-1">
+                            <option value="En attente" ${order.status === 'En attente' ? 'selected' : ''}>En attente</option>
+                            <option value="En préparation" ${order.status === 'En préparation' ? 'selected' : ''}>En préparation</option>
+                            <option value="Livré" ${order.status === 'Livré' ? 'selected' : ''}>Livré</option>
+                        </select>
+                        <div class="flex flex-col gap-1 items-center">
+                            <a href="https://wa.me/229${order.tel.replace(/\s+/g, '')}" target="_blank" class="text-[11px] text-green-600 hover:underline font-medium inline-block">💬 WhatsApp</a>
+                            <button onclick="genererRecuPDF('${order.id}')" class="text-[11px] text-brand-accent hover:underline font-medium inline-block">📄 Télécharger PDF</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.updateOrderStatus = async (orderId, newStatus) => {
+            if(!isAdmin) return;
+            try {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId), { status: newStatus });
+                showToast("Statut de la commande mis à jour", "success");
+            } catch(e) {
+                console.error(e);
+                showToast("Erreur lors de la mise à jour", "error");
+            }
+        };
+
+        // GESTION RECU PDF
+        window.genererRecuPDF = (orderId) => {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) { showToast("Commande introuvable", "error"); return; }
+            if (!order.items || order.items.length === 0) { showToast("Cette commande n'a pas d'articles", "error"); return; }
+
+            document.getElementById('recu-num-cmd').innerText = order.id.slice(0, 8).toUpperCase();
+            document.getElementById('recu-date').innerText = order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' }) : '—';
+            document.getElementById('recu-client-nom').innerText = order.nom || '—';
+            document.getElementById('recu-client-tel').innerText = order.tel || '—';
+            document.getElementById('recu-client-adresse').innerText = `${order.adresse || ''}${order.ville ? ', ' + order.ville : ''}`;
+
+            const tbody = document.getElementById('recu-liste-articles');
+            tbody.innerHTML = '';
+            let total = 0;
+            order.items.forEach(item => {
+                const ligneTotal = (parseFloat(item.price) || 0) * (item.quantity || 1);
+                total += ligneTotal;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="padding:4px 0; border-bottom:1px solid #F3F4F6;">${item.quantity}x ${item.name}${item.variante ? ' (' + item.variante + ')' : ''}</td>
+                    <td style="padding:4px 0; border-bottom:1px solid #F3F4F6; text-align:right; white-space:nowrap;">${formatPrice(ligneTotal)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            document.getElementById('recu-total').innerText = `Total : ${formatPrice(order.total ?? total)}`;
+
+            const element = document.getElementById('recu-template');
+            element.style.display = 'block';
+
+            const options = {
+                margin: 10,
+                filename: `Recu_TerraMarket_${order.id.slice(0, 8)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            showToast("Génération du reçu PDF...", "info");
+            html2pdf().set(options).from(element).save().then(() => {
+                element.style.display = 'none';
+                showToast("Reçu PDF téléchargé", "success");
+            }).catch((e) => {
+                console.error(e);
+                element.style.display = 'none';
+                showToast("Erreur lors de la génération du PDF", "error");
+            });
+        };
+
+        function formatPrice(price) { return (parseInt(price) || 0).toLocaleString('fr-FR') + ' FCFA'; }
+
+        // MOTEUR DE RECHERCHE GLOBALE
+        window.handleGlobalSearch = (query) => {
+            const q = query.trim().toLowerCase();
+            const searchView = document.getElementById('search-results-view');
+            const catView = document.getElementById('categories-view');
+            const detailView = document.getElementById('category-detail-view');
+            const grid = document.getElementById('search-product-grid');
+
+            if(q === '') {
+                searchView.classList.add('hidden');
+                catView.classList.remove('hidden');
+                return;
+            }
+
+            catView.classList.add('hidden');
+            detailView.classList.add('hidden');
+            searchView.classList.remove('hidden');
+            grid.innerHTML = '';
+
+            const matched = products.filter(p => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)) || p.category.toLowerCase().includes(q));
+
+            if(matched.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 bg-gray-50 rounded-2xl"><p class="text-base font-medium">Aucun résultat trouvé pour "${query}"</p></div>`;
+                return;
+            }
+
+            matched.forEach(prod => { grid.innerHTML += buildProductCardHTML(prod); });
+        };
+
+        window.clearSearch = () => {
+            document.getElementById('global-search').value = '';
+            document.getElementById('search-results-view').classList.add('hidden');
+            document.getElementById('categories-view').classList.remove('hidden');
+        };
+
+        // PARTAGE WHATSAPP 
+        window.shareProductWhatsApp = (productId) => {
+            const prod = products.find(p => p.id === productId);
+            if(!prod) return;
+            const text = `Bonjour Terra Market 👋,\nJe suis intéressé(e) par cet article : *${prod.name}* au prix de *${formatPrice(prod.price)}*. Est-il disponible ?`;
+            const waDigits = (settings.whatsapp || '2290147527920').replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${waDigits}?text=${encodeURIComponent(text)}`, '_blank');
+        };
+
+        // GESTION LIGHTBOX & MODALE PRODUIT
+        window.openLightbox = (src) => {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            if(src && src.startsWith('http')) {
+                img.src = src;
+                modal.classList.remove('hidden');
+                setTimeout(() => img.classList.replace('scale-95', 'scale-100'), 10);
+            }
+        };
+        
+        window.closeLightbox = () => {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            img.classList.replace('scale-100', 'scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
+        window.openProductDetails = (productId) => {
+            const prod = products.find(p => p.id === productId);
+            if(!prod) return;
+            
+            const isOOS = prod.status === 'Rupture';
+            const hasDiscount = prod.oldPrice && parseFloat(prod.oldPrice) > parseFloat(prod.price);
+            
+            document.getElementById('detail-img').src = prod.image;
+            document.getElementById('detail-category').innerText = prod.category;
+            document.getElementById('detail-title').innerText = prod.name;
+            document.getElementById('detail-price').innerText = formatPrice(prod.price);
+            document.getElementById('detail-desc').innerHTML = prod.description ? prod.description.replace(/\n/g, '<br>') : 'Aucune description.';
+            
+            const oldPriceEl = document.getElementById('detail-old-price');
+            if(hasDiscount) {
+                oldPriceEl.innerText = formatPrice(prod.oldPrice);
+                oldPriceEl.classList.remove('hidden');
+            } else {
+                oldPriceEl.classList.add('hidden');
+            }
+
+            let badgesHtml = '';
+            if (isOOS) badgesHtml += `<span class="bg-red-500 text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-sm">Rupture</span>`;
+            if (hasDiscount) badgesHtml += `<span class="bg-red-600 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-sm">-${Math.round(((prod.oldPrice - prod.price) / prod.oldPrice) * 100)}%</span>`;
+            document.getElementById('detail-badges').innerHTML = badgesHtml;
+
+            const varContainer = document.getElementById('detail-variantes-container');
+            const varSelect = document.getElementById('detail-variante-select');
+            const varianteOptions = (prod.variante || '').split(',').map(v => v.trim()).filter(Boolean);
+            if(varianteOptions.length > 0) {
+                varSelect.innerHTML = varianteOptions.map(v => `<option value="${v}">${v}</option>`).join('');
+                varContainer.classList.remove('hidden');
+            } else {
+                varContainer.classList.add('hidden');
+                varSelect.innerHTML = '';
+            }
+
+            const btnCart = document.getElementById('detail-btn-cart');
+            const btnOrder = document.getElementById('detail-btn-order');
+            const btnWa = document.getElementById('detail-btn-wa');
+
+            // Reset event listeners
+            btnCart.replaceWith(btnCart.cloneNode(true));
+            btnOrder.replaceWith(btnOrder.cloneNode(true));
+            btnWa.replaceWith(btnWa.cloneNode(true));
+            
+            const newBtnCart = document.getElementById('detail-btn-cart');
+            const newBtnOrder = document.getElementById('detail-btn-order');
+            const newBtnWa = document.getElementById('detail-btn-wa');
+
+            if (isOOS) {
+                newBtnCart.disabled = true; newBtnCart.classList.add('opacity-50', 'cursor-not-allowed');
+                newBtnOrder.disabled = true; newBtnOrder.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-400'); newBtnOrder.innerText = 'Indisponible';
+            } else {
+                newBtnCart.disabled = false; newBtnCart.classList.remove('opacity-50', 'cursor-not-allowed');
+                newBtnOrder.disabled = false; newBtnOrder.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400'); newBtnOrder.innerText = 'Commander maintenant';
+                
+                newBtnCart.onclick = () => {
+                    const tempSelect = document.createElement('select'); tempSelect.id = `variant-select-${prod.id}`;
+                    tempSelect.innerHTML = `<option value="${varSelect.value}" selected></option>`;
+                    document.body.appendChild(tempSelect);
+                    addToCart(prod.id, false);
+                    tempSelect.remove();
+                };
+                newBtnOrder.onclick = () => {
+                    const tempSelect = document.createElement('select'); tempSelect.id = `variant-select-${prod.id}`;
+                    tempSelect.innerHTML = `<option value="${varSelect.value}" selected></option>`;
+                    document.body.appendChild(tempSelect);
+                    addToCart(prod.id, true);
+                    tempSelect.remove();
+                    closeProductDetails();
+                };
+            }
+            newBtnWa.onclick = () => shareProductWhatsApp(prod.id);
+
+            document.getElementById('product-detail-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeProductDetails = () => {
+            document.getElementById('product-detail-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        // GESTION DES MODALES DE SERVICES (Lien Bento -> Modal)
+        window.openServiceModal = (serviceId) => {
+            const srvData = (settings.services || {})[serviceId];
+            if(!srvData) return;
+            const container = document.getElementById('service-modal-content');
+            container.innerHTML = '';
+            
+            if (serviceId === 'credit') {
+                container.innerHTML = `
+                    <div class="bg-[#1B2436] w-full h-full flex flex-col p-6 sm:p-12 text-white relative">
+                        <div class="flex items-start justify-between mb-8">
+                            <div class="bg-blue-600/20 w-16 h-16 rounded-xl flex items-center justify-center border border-blue-500/30 text-blue-400">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                            <div class="border border-red-500/50 text-red-200 text-xs sm:text-sm font-bold px-4 py-2 rounded-full bg-red-900/30 backdrop-blur">
+                                EXCLUT ÉLECTROMÉNAGER
+                            </div>
+                        </div>
+                        <h2 class="text-3xl sm:text-5xl font-bold uppercase tracking-tight mb-4">${srvData.title || 'MEUBLES À CRÉDIT'}</h2>
+                        <p class="text-gray-300 text-lg sm:text-xl mb-6 max-w-2xl">${srvData.shortDesc || "Versez 50 % aujourd'hui et payez le reste en 3 mois, en toute sérénité."}</p>
+                        
+                        <div class="inline-block self-start bg-white text-[#1B2436] font-black text-sm sm:text-base px-5 py-2.5 rounded-lg shadow-lg mb-12">
+                            50 % AUJOURD'HUI • 50 % EN 3 MOIS
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-16 border-t border-gray-700/50 pt-8 sm:pt-12 flex-grow">
+                            <div>
+                                <h3 class="flex items-center text-blue-500 font-bold mb-6 text-sm sm:text-base uppercase tracking-widest">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    COMMENT ÇA MARCHE ?
+                                </h3>
+                                <ul class="space-y-4 text-gray-300 text-base sm:text-lg">
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 font-bold mr-3">1.</span>
+                                        <span>Choisissez votre meuble (hors électroménager).</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 font-bold mr-3">2.</span>
+                                        <span>Versez l'acompte initial de 50%.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 font-bold mr-3">3.</span>
+                                        <span>Fournissez une pièce d'identité et un justificatif de domicile.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 font-bold mr-3">4.</span>
+                                        <span>Signez le contrat et payez le reste sur 3 mois.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="flex flex-col justify-between">
+                                <div>
+                                    <h3 class="text-gray-400 font-bold mb-4 text-sm sm:text-base uppercase tracking-widest">VOS ENGAGEMENTS</h3>
+                                    <p class="text-gray-400 text-sm sm:text-base leading-relaxed mb-8">${srvData.detailedDesc || "En signant le contrat, vous vous engagez à respecter les dates d'échéance convenues et à conserver les articles en bon état. Tout retard peut entraîner des pénalités."}</p>
+                                </div>
+                                <a href="https://wa.me/${(settings.whatsapp || '2290147527920').replace(/[^0-9]/g, '')}?text=${encodeURIComponent("Bonjour Terra Market 👋,\nJe souhaite faire une demande pour acheter un meuble à crédit.")}" target="_blank" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-center py-4 rounded-xl transition shadow-[0_0_20px_rgba(37,99,235,0.4)] flex justify-center items-center text-lg uppercase tracking-wide">
+                                    FAIRE UNE DEMANDE 
+                                    <svg class="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                let categoryGridHtml = '';
+                if(srvData.linkedCategory && srvData.linkedCategory !== '') {
+                    const linkedProducts = products.filter(p => p.category === srvData.linkedCategory);
+                    if(linkedProducts.length > 0) {
+                        const cardsHtml = linkedProducts.map(p => buildProductCardHTML(p)).join('');
+                        categoryGridHtml = `
+                            <div class="mt-8 border-t border-gray-100 pt-8">
+                                <h3 class="text-xl font-serif font-bold text-gray-900 mb-6 flex items-center">
+                                    <span class="bg-brand-accent/10 text-brand-accent p-1.5 rounded mr-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></span>
+                                    Articles concernés (${srvData.linkedCategory})
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    ${cardsHtml}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        categoryGridHtml = `<div class="mt-8 border-t border-gray-100 pt-8 text-center text-gray-400 italic text-sm">Aucun article trouvé dans la catégorie "${srvData.linkedCategory}".</div>`;
+                    }
+                }
+
+                container.innerHTML = `
+                    <div class="p-6 sm:p-10 flex-grow bg-white">
+                        <div class="max-w-3xl mb-4">
+                            <h2 class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 mb-4">${srvData.title}</h2>
+                            <p class="text-gray-600 text-lg mb-2">${srvData.shortDesc}</p>
+                            ${srvData.detailedDesc ? `<p class="text-gray-500 text-sm mt-4 bg-gray-50 p-4 rounded-xl border border-gray-100">${srvData.detailedDesc}</p>` : ''}
+                        </div>
+                        ${categoryGridHtml}
+                    </div>
+                `;
+            }
+
+            document.getElementById('service-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeServiceModal = () => {
+            document.getElementById('service-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        // COMPOSANT HTML PRODUIT (Générique - Centré)
+        function buildProductCardHTML(prod) {
+            const isOOS = prod.status === 'Rupture';
+            const hasDiscount = prod.oldPrice && parseFloat(prod.oldPrice) > parseFloat(prod.price);
+            const discountPercent = hasDiscount ? Math.round(((prod.oldPrice - prod.price) / prod.oldPrice) * 100) : 0;
+            
+            let badgesHTML = '';
+            if (isOOS) {
+                badgesHTML += `<div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-md z-10 pointer-events-none">Rupture</div>`;
+            } else if (hasDiscount) {
+                badgesHTML += `<div class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-md shadow-md z-10 pointer-events-none">-${discountPercent}%</div>`;
+            }
+
+            const cartBtnClass = isOOS ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-brand-dark";
+            const cmdBtnClass = isOOS ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-brand-dark text-white hover:bg-brand-accent shadow-md";
+            
+            const varianteOptions = (prod.variante || '').split(',').map(v => v.trim()).filter(Boolean);
+            const varianteSelectHtml = varianteOptions.length > 0 ? `
+                <div class="mb-4 mt-2 w-full" onclick="event.stopPropagation()">
+                    <select id="variant-select-${prod.id}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white font-medium text-gray-700 text-center">
+                        ${varianteOptions.map(v => `<option value="${v}">${v}</option>`).join('')}
+                    </select>
+                </div>` : '';
+
+            return `
+                <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col h-full relative cursor-pointer" onclick="openProductDetails('${prod.id}')">
+                    ${badgesHTML}
+                    <div class="relative h-56 sm:h-64 overflow-hidden bg-gray-50 flex items-center justify-center ${isOOS ? 'opacity-70 grayscale-[30%]' : ''}">
+                        <img src="${prod.image}" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-contain group-hover:scale-105 transition duration-500" alt="${prod.name}">
+                        <button onclick="event.stopPropagation(); shareProductWhatsApp('${prod.id}')" class="absolute bottom-3 right-3 bg-green-500 hover:bg-green-600 text-white p-2.5 rounded-full shadow-md transition hover:scale-110 z-10 opacity-0 group-hover:opacity-100" title="Partager sur WhatsApp">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.22-.453-2.333-1.455-1.46-1.31-2.059-2.888-2.122-2.996-.064-.109-.505-.671-.505-1.284 0-.614.318-.918.435-1.036.118-.119.254-.149.338-.149.085 0 .17.001.242.004.075.004.172-.03.271.213.125.307.427 1.045.465 1.121.038.076.064.164.015.263-.048.099-.074.159-.148.248-.076.089-.158.196-.227.272-.075.084-.156.176-.068.329.088.152.392.646.839 1.049.578.522 1.066.685 1.217.76.152.075.242.064.333-.039.091-.104.392-.454.498-.609.106-.155.212-.129.349-.079.137.05 1.157.545 1.258.62.102.074.171.119.196.185.025.066.025.385-.119.79z"></path></svg>
+                        </button>
+                    </div>
+                    <div class="p-4 sm:p-5 flex flex-col flex-grow justify-between bg-white text-center items-center">
+                        <div class="w-full flex flex-col items-center">
+                            <h3 class="font-serif font-bold text-xl sm:text-2xl text-gray-900 mb-1 sm:mb-2 leading-tight">${prod.name}</h3>
+                            <p class="text-sm text-gray-500 mb-3 line-clamp-2 min-h-[40px] text-center">${prod.description || ''}</p>
+                            <div class="flex items-center justify-center space-x-2 mb-2 sm:mb-3">
+                                <p class="text-brand-accent font-bold text-lg sm:text-xl">${formatPrice(prod.price)}</p>
+                                ${hasDiscount ? `<span class="text-xs sm:text-sm text-gray-400 line-through font-medium">${formatPrice(prod.oldPrice)}</span>` : ''}
+                            </div>
+                            ${varianteSelectHtml}
+                        </div>
+                        <div class="flex space-x-2 sm:space-x-3 mt-auto pt-2 w-full" onclick="event.stopPropagation()">
+                            <button ${isOOS ? 'disabled' : ''} onclick="addToCart('${prod.id}', false)" class="flex-none p-3 sm:p-3.5 rounded-lg transition ${cartBtnClass}" title="Ajouter au panier">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </button>
+                            <button ${isOOS ? 'disabled' : ''} onclick="addToCart('${prod.id}', true)" class="flex-grow py-3 sm:py-3.5 rounded-lg transition font-semibold text-sm sm:text-base ${cmdBtnClass}">
+                                ${isOOS ? 'Indisponible' : 'Commander'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // AFFICHAGE DES CATEGORIES (Accueil public)
+        function renderCategories() {
+            const grid = document.getElementById('category-grid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            if (products.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center text-gray-500 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col items-center justify-center">
+                        <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        <p class="text-xl font-bold text-gray-700 mb-2">Catalogue en préparation</p>
+                        <p class="text-sm">Aucun article n'est disponible pour le moment. Revenez bientôt !</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const CATEGORIES_IMG = {
+                "Matelas": "https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=600&q=80",
+                "TV LG Smart": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80",
+                "Siège Balançoire": "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80",
+                "Table à Manger": "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&w=600&q=80",
+                "Rideaux & Draps": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80",
+                "Woofers": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80",
+                "Lits Modernes HDF": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80",
+                "Armoire": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=600&q=80",
+                "Lits Bourrés": "https://plus.unsplash.com/premium_photo-1661766077366-07974e40245a?auto=format&fit=crop&w=600&q=80",
+                "Pose TV/Guéridon": "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&w=600&q=80",
+                "Canapé": "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80"
+            };
+
+            const existingCategories = [...new Set(products.map(p => p.category))];
+
+            existingCategories.forEach(catName => {
+                const catProducts = products.filter(p => p.category === catName && p.image);
+                const images = catProducts.map(p => p.image);
+                
+                const displayImages = images.length > 0 ? images : [CATEGORIES_IMG[catName] || "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=80"];
+                const firstImg = displayImages[0];
+
+                grid.innerHTML += `
+                    <div onclick="openCategory('${catName}')" class="perf-optimize group cursor-pointer rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 bg-white relative">
+                        <div class="w-full h-40 sm:h-48 overflow-hidden relative category-card-container bg-gray-50 flex items-center justify-center" data-images='${JSON.stringify(displayImages)}'>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10 transition-opacity group-hover:opacity-90"></div>
+                            <img src="${firstImg}" loading="lazy" decoding="async" width="600" height="400" class="category-slider-img w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="${catName}">
+                            <h3 class="absolute bottom-4 left-4 right-4 z-20 text-white font-bold text-lg sm:text-xl leading-tight text-center">${catName}</h3>
+                        </div>
+                    </div>
+                `;
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.category-card-container').forEach(container => {
+                    const imgElement = container.querySelector('.category-slider-img');
+                    try {
+                        const images = JSON.parse(container.dataset.images);
+                        if (images.length > 1) {
+                            let currentIndex = 0;
+                            setInterval(() => {
+                                currentIndex = (currentIndex + 1) % images.length;
+                                imgElement.style.opacity = '0';
+                                setTimeout(() => {
+                                    imgElement.src = images[currentIndex];
+                                    imgElement.style.opacity = '1';
+                                }, 300);
+                            }, 3500);
+                        }
+                    } catch(e) {}
+                });
+            }, 100);
+        }
+
+        function renderCategoryProducts(categoryName) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            let filteredProducts = products.filter(p => p.category === categoryName);
+            
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-gray-500 bg-gray-50 rounded-2xl border border-gray-100">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        <p class="text-lg font-medium text-gray-800">Aucun produit disponible pour le moment.</p>
+                        <p class="text-sm mt-1">Notre catalogue est mis à jour régulièrement.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Tri dynamique
+            const sortBy = document.getElementById('product-sort-select').value;
+            if (sortBy === 'price-asc') {
+                filteredProducts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+            } else if (sortBy === 'price-desc') {
+                filteredProducts.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            } else if (sortBy === 'newest') {
+                filteredProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            }
+            
+            filteredProducts.forEach(prod => { grid.innerHTML += buildProductCardHTML(prod); });
+        }
+
+        window.sortCategoryProducts = () => {
+            if (currentActiveCategory) {
+                renderCategoryProducts(currentActiveCategory);
+            }
+        };
+
+        // GESTION DU PANIER & PROMOTIONS DYNAMIQUES
+        window.applyPromoCode = () => {
+            const input = document.getElementById('promo-code-input').value.trim().toUpperCase();
+            const msgEl = document.getElementById('promo-message');
+            
+            if(input === '') { showToast("Entrez un code promo", "error"); return; }
+            if(cart.length === 0) { showToast("Votre panier est vide", "error"); return; }
+
+            const foundPromo = (settings.promoCodes || []).find(p => p.code === input);
+
+            if(foundPromo) {
+                currentPromo = foundPromo;
+                msgEl.innerText = `Code "${input}" appliqué avec succès !`;
+                msgEl.className = "text-xs mt-1.5 font-medium text-green-600";
+                msgEl.classList.remove('hidden');
+                showToast("Code promo appliqué !", "success");
+            } else {
+                currentPromo = null;
+                msgEl.innerText = "Code promo invalide ou expiré.";
+                msgEl.className = "text-xs mt-1.5 font-medium text-red-500";
+                msgEl.classList.remove('hidden');
+            }
+            updateCartUI(); 
+        };
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            const badge = document.getElementById('cart-badge');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const clearBtn = document.getElementById('clear-cart-btn');
+            
+            cartSubtotal = 0; 
+            container.innerHTML = '';
+            const uniqueItemCount = cart.length;
+            
+            if (uniqueItemCount === 0) {
+                badge.classList.add('hidden'); 
+                checkoutBtn.disabled = true;
+                clearBtn.classList.add('hidden');
+                appliedDiscount = 0;
+                currentPromo = null;
+                document.getElementById('promo-code-input').value = "";
+                document.getElementById('promo-message').classList.add('hidden');
+                container.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-gray-400 space-y-4 pt-10"><svg class="w-16 h-16 sm:w-20 sm:h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg><p class="text-sm sm:text-base">Votre panier est vide.</p></div>`;
+            } else {
+                badge.classList.remove('hidden');
+                badge.innerText = uniqueItemCount;
+                checkoutBtn.disabled = false;
+                clearBtn.classList.remove('hidden');
+                
+                cart.forEach(item => {
+                    const lineTotal = item.price * item.quantity;
+                    cartSubtotal += lineTotal;
+                    const varianteLabel = item.variante ? `<span class="text-xs text-gray-500 font-medium">Variante : ${item.variante}</span>` : '';
+                    
+                    container.innerHTML += `
+                        <div class="flex space-x-3 sm:space-x-4 bg-white p-3 sm:p-4 rounded-xl border border-gray-100 shadow-sm relative group">
+                            <button onclick="removeFromCart('${item.id}', '${item.variante || ''}')" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition opacity-0 group-hover:opacity-100 bg-white rounded-full p-1 shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                            <img src="${item.image}" loading="lazy" decoding="async" width="96" height="96" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg shrink-0" alt="${item.name}">
+                            <div class="flex-grow flex flex-col justify-between">
+                                <div class="pr-6 flex flex-col gap-0.5">
+                                    <h4 class="font-bold text-gray-900 text-sm sm:text-base leading-tight">${item.name}</h4>
+                                    ${varianteLabel}
+                                    <p class="text-brand-accent font-semibold text-xs sm:text-sm">${formatPrice(item.price)}</p>
+                                </div>
+                                <div class="flex justify-between items-end mt-2 sm:mt-3">
+                                    <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50 h-8 sm:h-9">
+                                        <button onclick="updateQuantity('${item.id}', -1, '${item.variante || ''}')" class="px-3 sm:px-4 h-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 transition text-sm sm:text-base font-medium flex items-center justify-center">-</button>
+                                        <span class="px-2 sm:px-3 text-xs sm:text-sm font-bold w-6 text-center border-x border-gray-200 flex items-center justify-center h-full bg-white">${item.quantity}</span>
+                                        <button onclick="updateQuantity('${item.id}', 1, '${item.variante || ''}')" class="px-3 sm:px-4 h-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 transition text-sm sm:text-base font-medium flex items-center justify-center">+</button>
+                                    </div>
+                                    <span class="text-sm font-bold text-gray-700 hidden sm:inline-block">Total: ${formatPrice(lineTotal)}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            }
+
+            if (currentPromo) {
+                if (currentPromo.type === 'percent') {
+                    appliedDiscount = Math.round(cartSubtotal * (currentPromo.value / 100));
+                } else if (currentPromo.type === 'fixed') {
+                    appliedDiscount = currentPromo.value;
+                }
+                if (appliedDiscount > cartSubtotal) {
+                    appliedDiscount = cartSubtotal;
+                }
+            } else {
+                appliedDiscount = 0;
+            }
+
+            cartTotal = Math.max(0, cartSubtotal - appliedDiscount);
+            document.getElementById('cart-subtotal').innerText = formatPrice(cartSubtotal);
+            
+            const discountRow = document.getElementById('promo-discount-row');
+            if(appliedDiscount > 0) {
+                discountRow.classList.remove('hidden');
+                let promoLabel = currentPromo.type === 'percent' ? `-${currentPromo.value}%` : `-${formatPrice(currentPromo.value)}`;
+                document.getElementById('promo-code-name').innerText = `${currentPromo.code} (${promoLabel})`;
+                document.getElementById('cart-discount').innerText = '-' + formatPrice(appliedDiscount);
+            } else {
+                discountRow.classList.add('hidden');
+            }
+            document.getElementById('cart-total').innerText = formatPrice(cartTotal);
+        }
+
+        async function processCheckout(method) {
+            const nom = document.getElementById('checkout-nom').value.trim(); 
+            const tel = document.getElementById('checkout-tel').value.trim();
+            const adresse = document.getElementById('checkout-adresse').value.trim(); 
+            const ville = document.getElementById('checkout-ville').value;
+            
+            if(!nom || !tel || !adresse || !ville) { 
+                showToast("Veuillez remplir toutes les informations de livraison.", "error"); 
+                return; 
+            }
+            if(!user) {
+                showToast("Connexion à la base de données en cours, patientez...", "error");
+                return;
+            }
+
+            try {
+                const ordersRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
+                const promoName = currentPromo ? currentPromo.code : 'Aucun';
+                await addDoc(ordersRef, {
+                    nom, tel, adresse, ville, method,
+                    items: cart,
+                    subtotal: cartSubtotal,
+                    discount: appliedDiscount,
+                    promoCode: promoName,
+                    total: cartTotal,
+                    status: 'En attente',
+                    createdAt: Date.now()
+                });
+
+                if(method === 'WhatsApp') {
+                    let itemsList = cart.map(item => `▪️ ${item.quantity}x ${item.name}${item.variante ? ' (' + item.variante + ')' : ''} (${formatPrice(item.price * item.quantity)})`).join('\n');
+                    let promoStr = appliedDiscount > 0 ? `🎟️ Code Promo : ${promoName} (-${formatPrice(appliedDiscount)})\n` : '';
+                    let template = settings.whatsappTemplate || DEFAULT_WHATSAPP_TEMPLATE;
+                    let message = template
+                        .replace(/{nom}/g, nom)
+                        .replace(/{tel}/g, tel)
+                        .replace(/{adresse}/g, adresse)
+                        .replace(/{ville}/g, ville)
+                        .replace(/{items}/g, itemsList)
+                        .replace(/{promo}/g, promoStr)
+                        .replace(/{total}/g, formatPrice(cartTotal));
+                    
+                    const waDigits = (settings.whatsapp || '2290147527920').replace(/[^0-9]/g, '');
+                    window.open(`https://wa.me/${waDigits}?text=${encodeURIComponent(message)}`, '_blank');
+                }
+                
+                cart = [];
+                appliedDiscount = 0;
+                currentPromo = null;
+                localStorage.setItem('terraCart', JSON.stringify(cart));
+                updateCartUI();
+                showToast("Commande validée et transmise !", "success");
+                closeCheckoutModal();
+            } catch (e) {
+                console.error(e);
+                showToast("Erreur lors de l'enregistrement de la commande.", "error");
+            }
+        }
+
+        function renderAdminProducts() {
+            const list = document.getElementById('admin-product-list');
+            if(!list) return;
+            list.innerHTML = '';
+            products.forEach(prod => {
+                const hasDiscount = prod.oldPrice && parseFloat(prod.oldPrice) > parseFloat(prod.price);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-10 w-10 flex-shrink-0">
+                                <img class="h-10 w-10 rounded-lg object-cover border border-gray-200" src="${prod.image}" loading="lazy" decoding="async" width="40" height="40" alt="${prod.name}">
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-gray-900">${prod.name}</div>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${prod.status === 'En stock' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} mt-1">
+                                    ${prod.status}
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium hidden sm:table-cell">
+                        <div>${formatPrice(prod.price)}</div>
+                        ${hasDiscount ? `<div class="text-xs text-gray-400 line-through">${formatPrice(prod.oldPrice)}</div>` : ''}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">${prod.category}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick="editProduct('${prod.id}')" class="text-brand-accent hover:text-brand-accentHover mr-3 bg-blue-50 px-2 py-1 rounded">Éditer</button>
+                        <button onclick="deleteProduct('${prod.id}')" class="text-red-500 hover:text-red-700 bg-red-50 px-2 py-1 rounded">Suppr.</button>
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+        }
+
+        async function saveProduct() {
+            const id = document.getElementById('prod-id').value;
+            const name = document.getElementById('prod-name').value.trim();
+            const desc = document.getElementById('prod-desc').value.trim();
+            const price = document.getElementById('prod-price').value;
+            const oldPrice = document.getElementById('prod-old-price').value;
+            const category = document.getElementById('prod-category').value;
+            const status = document.getElementById('prod-status').value;
+            const variante = document.getElementById('prod-variante').value.trim();
+            const fileInput = document.getElementById('prod-image-file');
+            const file = fileInput.files[0];
+            let image = document.getElementById('prod-image-url').value;
+            
+            if(!name || !price) { showToast("Veuillez renseigner le nom et le prix", "error"); return; }
+            if(!isAdmin) { showToast("Vous devez être connecté en tant qu'administrateur.", "error"); return; }
+
+            const btnSave = document.getElementById('btn-save-product');
+            const uploadStatus = document.getElementById('upload-status');
+            const originalBtnText = btnSave.innerText;
+
+            try {
+                btnSave.disabled = true;
+                btnSave.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                if (file) {
+                    uploadStatus.classList.remove('hidden');
+                    uploadStatus.innerText = "📤 Compression et sauvegarde...";
+                    btnSave.innerText = "Compression...";
+                    
+                    const compressedDataUrl = await compressImage(file, 800, 0.75);
+                    image = compressedDataUrl;
+                    
+                    uploadStatus.classList.add('hidden');
+                } else if (!image) {
+                    image = "https://placehold.co/600x400/f3f4f6/a1a1aa?text=Image+Bientot+Disponible";
+                }
+
+                btnSave.innerText = "Sauvegarde...";
+                const productsRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+                const productData = {
+                    name, 
+                    description: desc, 
+                    price: parseInt(price), 
+                    oldPrice: oldPrice ? parseInt(oldPrice) : 0, 
+                    category, 
+                    status,
+                    variante,
+                    image
+                };
+
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id), productData);
+                    showToast("Produit modifié avec succès !", "success");
+                } else {
+                    productData.createdAt = Date.now();
+                    await addDoc(productsRef, productData);
+                    showToast("Produit ajouté avec succès !", "success");
+                }
+                closeProductModal();
+            } catch(e) {
+                console.error(e);
+                showToast("Erreur lors de la sauvegarde (Image trop lourde ?)", "error");
+            } finally {
+                btnSave.disabled = false;
+                btnSave.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnSave.innerText = originalBtnText;
+                uploadStatus.classList.add('hidden');
+            }
+        }
+
+        window.deleteProduct = (id) => {
+            if(!isAdmin) { showToast("Accès refusé.", "error"); return; }
+            openConfirmModal("Supprimer le produit", "Êtes-vous sûr de vouloir supprimer définitivement cet article du catalogue ?", async () => {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id));
+                    showToast("Article supprimé avec succès", "info");
+                } catch(e) {
+                    console.error(e);
+                    showToast("Erreur lors de la suppression", "error");
+                }
+            });
+        };
+
+        window.openCategory = (name) => {
+            currentActiveCategory = name;
+            document.getElementById('categories-view').classList.add('hidden');
+            document.getElementById('category-detail-view').classList.remove('hidden');
+            document.getElementById('search-results-view').classList.add('hidden');
+            document.getElementById('current-category-title').innerText = name;
+            document.getElementById('product-sort-select').value = 'newest';
+            renderCategoryProducts(name);
+            document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
+        };
+        
+        window.closeCategory = () => {
+            currentActiveCategory = "";
+            document.getElementById('category-detail-view').classList.add('hidden');
+            document.getElementById('categories-view').classList.remove('hidden');
+            document.getElementById('catalogue').scrollIntoView({ behavior: 'smooth' });
+        };
+        
+        window.goToHome = () => {
+            closeCategory();
+            clearSearch();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.toggleCart = () => {
+            document.getElementById('cart-drawer').classList.toggle('open');
+            document.getElementById('cart-overlay').classList.toggle('open');
+            document.body.style.overflow = document.getElementById('cart-drawer').classList.contains('open') ? 'hidden' : '';
+        };
+        
+        window.toggleMenu = () => {
+            const menu = document.getElementById('dropdown-menu');
+            menu.classList.toggle('hidden');
+        };
+
+        window.addToCart = (productId, instantCheckout = false) => {
+            const product = products.find(p => p.id === productId);
+            if(!product || product.status === 'Rupture') return;
+            const varianteSelect = document.getElementById(`variant-select-${productId}`);
+            const variante = varianteSelect ? varianteSelect.value : '';
+            const existingItem = cart.find(item => item.id === productId && (item.variante || '') === variante);
+            if (existingItem) existingItem.quantity += 1; else cart.push({ ...product, quantity: 1, variante });
+            localStorage.setItem('terraCart', JSON.stringify(cart));
+            updateCartUI();
+            if (instantCheckout) window.openCheckout(); else showToast(`"${product.name}"${variante ? ' (' + variante + ')' : ''} ajouté au panier`, "success");
+        };
+        
+        window.updateQuantity = (productId, delta, variante = '') => {
+            const item = cart.find(i => i.id === productId && (i.variante || '') === variante);
+            if(item) { 
+                item.quantity += delta; 
+                if(item.quantity <= 0) cart = cart.filter(i => i !== item); 
+                localStorage.setItem('terraCart', JSON.stringify(cart)); updateCartUI(); 
+            }
+        };
+        
+        window.removeFromCart = (productId, variante = '') => {
+            cart = cart.filter(i => !(i.id === productId && (i.variante || '') === variante));
+            localStorage.setItem('terraCart', JSON.stringify(cart)); updateCartUI();
+        };
+        
+        window.clearCart = () => {
+            openConfirmModal("Vider le panier", "Voulez-vous vraiment retirer tous les articles de votre panier ?", () => {
+                cart = []; 
+                appliedDiscount = 0;
+                currentPromo = null;
+                localStorage.setItem('terraCart', JSON.stringify(cart)); 
+                updateCartUI(); 
+                showToast("Votre panier a été vidé", "info");
+            });
+        };
+        
+        window.openCheckout = () => {
+            if(cart.length === 0) return;
+            if(document.getElementById('cart-drawer').classList.contains('open')) window.toggleCart();
+            document.getElementById('checkout-item-count').innerText = `${cart.reduce((sum, item) => sum + item.quantity, 0)} article(s)`;
+            document.getElementById('checkout-total-price').innerText = formatPrice(cartTotal);
+            document.getElementById('checkout-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+        
+        window.closeCheckoutModal = () => { document.getElementById('checkout-modal').classList.remove('active'); document.body.style.overflow = ''; };
+        window.processCheckout = processCheckout;
+
+        window.showToast = (msg, type='info') => {
+            const c = document.getElementById('toast-container'); const t = document.createElement('div');
+            t.className = `toast ${type === 'success' ? 'bg-green-600' : (type === 'error' ? 'bg-red-500' : 'bg-brand-dark')} text-white px-5 py-4 rounded-xl shadow-2xl flex items-center space-x-3 text-sm font-medium w-full sm:w-auto`;
+            t.innerHTML = `<span>${msg}</span>`; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10);
+            setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
+        };
+        
+        let secretClickCount = 0; let secretClickTimer = null;
+        window.handleSecretLoginClick = () => {
+            const logo = document.getElementById('secret-logo-btn');
+            if(logo) { logo.classList.remove('logo-click-pulse'); void logo.offsetWidth; logo.classList.add('logo-click-pulse'); }
+            secretClickCount++; clearTimeout(secretClickTimer);
+            if (secretClickCount >= 5) { secretClickCount = 0; document.getElementById('admin-login-modal').classList.add('active'); }
+            else { secretClickTimer = setTimeout(() => { secretClickCount = 0; }, 1500); }
+        };
+        
+        window.closeAdminLoginModal = () => {
+            document.getElementById('admin-login-modal').classList.remove('active');
+            document.getElementById('admin-password').value = '';
+            document.getElementById('admin-login-error').classList.add('hidden');
+        };
+        
+        window.attemptAdminLogin = async () => {
+            const email = document.getElementById('admin-email').value.trim();
+            const password = document.getElementById('admin-password').value;
+            const errEl = document.getElementById('admin-login-error');
+            const btn = document.getElementById('btn-admin-login');
+            errEl.classList.add('hidden');
+
+            if (!email || !password) {
+                errEl.innerText = "Renseignez l'e-mail et le mot de passe.";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Connexion...";
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (e) {
+                console.error(e);
+                errEl.innerText = "E-mail ou mot de passe incorrect.";
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Se connecter";
+            }
+        };
+        
+        window.logoutAdmin = () => { signOut(auth).catch((e) => console.error(e)); };
+
+        onAuthStateChanged(auth, (fbUser) => {
+            isAdmin = !!(fbUser && !fbUser.isAnonymous);
+            if (isAdmin) {
+                window.closeAdminLoginModal();
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById('admin-view').classList.add('active');
+                window.scrollTo(0, 0);
+                showToast("Connexion à l'Espace Pro réussie", "success");
+                renderAdminProducts(); renderOrdersTableFull(); updateDashboardStats();
+                applySettingsToStorefront(); 
+            } else if (document.getElementById('admin-view').classList.contains('active')) {
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById('client-view').classList.add('active');
+                applySettingsToStorefront();
+            }
+        });
+        
+        window.switchAdminTab = (tabId) => {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden')); 
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelectorAll('.admin-nav').forEach(el => el.classList.remove('active')); 
+            if(document.getElementById(`btn-${tabId}`)) document.getElementById(`btn-${tabId}`).classList.add('active');
+            
+            const mDash = document.getElementById('btn-tab-dashboard-mobile'), 
+                  mProd = document.getElementById('btn-tab-products-mobile'), 
+                  mOrd = document.getElementById('btn-tab-orders-mobile'),
+                  mSet = document.getElementById('btn-tab-settings-mobile');
+
+            if(mDash && mProd && mOrd && mSet) {
+                [mDash, mProd, mOrd, mSet].forEach(btn => {
+                    btn.classList.replace('border-brand-accent', 'border-transparent');
+                    btn.classList.replace('text-brand-accent', 'text-gray-500');
+                });
+                const activeMob = document.getElementById(`btn-${tabId}-mobile`);
+                if(activeMob) {
+                    activeMob.classList.replace('border-transparent', 'border-brand-accent');
+                    activeMob.classList.replace('text-gray-500', 'text-brand-accent');
+                }
+            }
+
+            if (tabId === 'tab-settings') {
+                renderSettingsForm();
+            }
+        };
+        
+        window.openProductModal = (id = null) => {
+            document.getElementById('admin-product-modal').classList.add('active');
+            document.getElementById('prod-image-file').value = ''; 
+            document.getElementById('quick-template').value = ''; 
+            
+            if (id) {
+                const prod = products.find(p => p.id === id);
+                document.getElementById('modal-title').innerText = "Modifier le produit"; 
+                document.getElementById('prod-id').value = prod.id; 
+                document.getElementById('prod-name').value = prod.name; 
+                document.getElementById('prod-desc').value = prod.description || ""; 
+                document.getElementById('prod-price').value = prod.price; 
+                document.getElementById('prod-old-price').value = prod.oldPrice || ""; 
+                document.getElementById('prod-category').value = prod.category; 
+                document.getElementById('prod-status').value = prod.status; 
+                document.getElementById('prod-image-url').value = prod.image || ""; 
+                document.getElementById('prod-variante').value = prod.variante || ""; 
+            } else {
+                document.getElementById('modal-title').innerText = "Nouveau produit"; 
+                document.getElementById('prod-id').value = ''; 
+                document.getElementById('prod-name').value = ''; 
+                document.getElementById('prod-desc').value = ''; 
+                document.getElementById('prod-price').value = ''; 
+                document.getElementById('prod-old-price').value = ''; 
+                document.getElementById('prod-category').value = 'Matelas'; 
+                document.getElementById('prod-status').value = 'En stock'; 
+                document.getElementById('prod-image-url').value = '';
+                document.getElementById('prod-variante').value = '';
+            }
+            window.toggleQuickFillVisibility();
+        };
+        
+        window.closeProductModal = () => document.getElementById('admin-product-modal').classList.remove('active');
+        window.saveProduct = saveProduct;
+        window.editProduct = (id) => window.openProductModal(id);
+
+        window.onload = () => { 
+            initFirebase();
+            initTemplates();
+            updateCartUI(); 
+        };
+    </script>
+</body>
+</html>
