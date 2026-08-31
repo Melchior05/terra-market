@@ -223,8 +223,7 @@
             
         </main>
         
-        <!-- Section Pourquoi Nous Choisir (Refonte Premium "Bento") -->
-        <section class="bg-white py-16 sm:py-24 mt-auto relative overflow-hidden border-t border-gray-100">
+        <section class="bg-white py-16 sm:py-24 mt-auto relative overflow-hidden">
             <!-- Arrière-plan décoratif subtil -->
             <div class="absolute top-0 left-0 w-64 h-64 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
             <div class="absolute bottom-0 right-0 w-80 h-80 bg-green-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
@@ -284,41 +283,53 @@
                     <div class="w-full lg:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:pl-4 mt-6 lg:mt-0">
                         
                         <!-- Carte 1 : Crédit (Mise en évidence) -->
-                        <div class="group bg-gradient-to-br from-white to-blue-50/50 p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-blue-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(37,99,235,0.15)] transition-all duration-300 relative overflow-hidden sm:-translate-y-6">
+                        <div onclick="openServiceModal('credit')" class="cursor-pointer group bg-gradient-to-br from-white to-blue-50/50 p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-blue-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(37,99,235,0.15)] transition-all duration-300 relative overflow-hidden sm:-translate-y-6 flex flex-col h-full">
                             <div class="absolute right-0 top-0 w-32 h-32 bg-brand-accent opacity-5 rounded-bl-[100px] transition-transform duration-700 group-hover:scale-125"></div>
-                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-brand-accent mb-6 relative z-10 group-hover:bg-brand-accent group-hover:text-white transition-colors duration-300 group-hover:rotate-6">
+                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-brand-accent mb-6 relative z-10 group-hover:bg-brand-accent group-hover:text-white transition-colors duration-300 group-hover:rotate-6 shrink-0">
                                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg sm:text-xl mb-3 relative z-10 group-hover:text-brand-accent transition-colors">Meubles à crédit</h4>
-                            <p class="text-sm text-gray-500 relative z-10 leading-relaxed">Repartez avec vos meubles dès aujourd'hui et étalez vos paiements en toute sérénité.</p>
+                            <div class="relative z-10 flex flex-col flex-grow">
+                                <h4 id="front-service-credit-title" class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-brand-accent transition-colors">Meubles à crédit</h4>
+                                <p id="front-service-credit-desc" class="text-sm text-gray-500 leading-relaxed mb-4">Repartez avec vos meubles dès aujourd'hui et étalez vos paiements en toute sérénité.</p>
+                                <span class="inline-flex items-center text-xs font-bold text-brand-accent mt-auto">En savoir plus <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </div>
                         </div>
 
                         <!-- Carte 2 : Électroménager -->
-                        <div class="group bg-white p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-gray-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-all duration-300">
-                            <div class="w-14 h-14 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center text-gray-600 mb-6 group-hover:bg-gray-900 group-hover:text-white transition-colors duration-300 group-hover:-rotate-6">
+                        <div onclick="openServiceModal('electro')" class="cursor-pointer group bg-white p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-gray-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full">
+                            <div class="w-14 h-14 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center text-gray-600 mb-6 group-hover:bg-gray-900 group-hover:text-white transition-colors duration-300 group-hover:-rotate-6 shrink-0">
                                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-gray-900 transition-colors">Électroménager</h4>
-                            <p class="text-sm text-gray-500 leading-relaxed">Découvrez notre gamme de téléviseurs et d'appareils de dernière génération.</p>
+                            <div class="flex flex-col flex-grow">
+                                <h4 id="front-service-electro-title" class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-gray-900 transition-colors">Électroménager</h4>
+                                <p id="front-service-electro-desc" class="text-sm text-gray-500 leading-relaxed mb-4">Découvrez notre gamme de téléviseurs et d'appareils de dernière génération.</p>
+                                <span class="inline-flex items-center text-xs font-bold text-gray-900 mt-auto group-hover:text-brand-accent transition-colors">Voir les articles <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </div>
                         </div>
 
                         <!-- Carte 3 : Aménagement -->
-                        <div class="group bg-white p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-gray-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 sm:-translate-y-6">
-                            <div class="w-14 h-14 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center text-gray-600 mb-6 group-hover:bg-gray-900 group-hover:text-white transition-colors duration-300 group-hover:-rotate-6">
+                        <div onclick="openServiceModal('amenagement')" class="cursor-pointer group bg-white p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-gray-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 sm:-translate-y-6 flex flex-col h-full">
+                            <div class="w-14 h-14 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center text-gray-600 mb-6 group-hover:bg-gray-900 group-hover:text-white transition-colors duration-300 group-hover:-rotate-6 shrink-0">
                                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-gray-900 transition-colors">Aménagement</h4>
-                            <p class="text-sm text-gray-500 leading-relaxed">Des meubles modernes, lits luxueux et salons élégants pour sublimer votre intérieur.</p>
+                            <div class="flex flex-col flex-grow">
+                                <h4 id="front-service-amenagement-title" class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-gray-900 transition-colors">Aménagement</h4>
+                                <p id="front-service-amenagement-desc" class="text-sm text-gray-500 leading-relaxed mb-4">Des meubles modernes, lits luxueux et salons élégants pour sublimer votre intérieur.</p>
+                                <span class="inline-flex items-center text-xs font-bold text-gray-900 mt-auto group-hover:text-brand-accent transition-colors">Voir les articles <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </div>
                         </div>
 
                         <!-- Carte 4 : Livraison (Mise en évidence) -->
-                        <div class="group bg-gradient-to-br from-white to-green-50/50 p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-green-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(34,197,94,0.15)] transition-all duration-300 relative overflow-hidden">
+                        <div onclick="openServiceModal('livraison')" class="cursor-pointer group bg-gradient-to-br from-white to-green-50/50 p-6 sm:p-7 rounded-[24px] border border-gray-100 hover:border-green-200 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(34,197,94,0.15)] transition-all duration-300 relative overflow-hidden flex flex-col h-full">
                             <div class="absolute right-0 top-0 w-32 h-32 bg-green-500 opacity-5 rounded-bl-[100px] transition-transform duration-700 group-hover:scale-125"></div>
-                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-green-600 mb-6 relative z-10 group-hover:bg-green-500 group-hover:text-white transition-colors duration-300 group-hover:rotate-6">
+                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-green-600 mb-6 relative z-10 group-hover:bg-green-500 group-hover:text-white transition-colors duration-300 group-hover:rotate-6 shrink-0">
                                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
                             </div>
-                            <h4 class="font-bold text-gray-900 text-lg sm:text-xl mb-3 relative z-10 group-hover:text-green-600 transition-colors">Livraison à domicile</h4>
-                            <p class="text-sm text-gray-500 relative z-10 leading-relaxed">Profitez d'un service de livraison rapide et soigné directement à votre adresse.</p>
+                            <div class="relative z-10 flex flex-col flex-grow">
+                                <h4 id="front-service-livraison-title" class="font-bold text-gray-900 text-lg sm:text-xl mb-3 group-hover:text-green-600 transition-colors">Livraison à domicile</h4>
+                                <p id="front-service-livraison-desc" class="text-sm text-gray-500 leading-relaxed mb-4">Profitez d'un service de livraison rapide et soigné directement à votre adresse.</p>
+                                <span class="inline-flex items-center text-xs font-bold text-green-600 mt-auto">En savoir plus <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -335,6 +346,195 @@
                 </div>
             </div>
         </footer>
+    </div>
+
+    <!-- MODAL : Lightbox Image -->
+    <div id="lightbox-modal" class="fixed inset-0 z-[120] bg-black/90 hidden flex flex-col items-center justify-center backdrop-blur-sm" onclick="closeLightbox()">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white hover:text-gray-300 bg-white/10 p-2 rounded-full backdrop-blur z-10 transition">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <img id="lightbox-img" src="" alt="Zoom" class="max-w-[95vw] max-h-[90vh] object-contain shadow-2xl rounded-lg scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+    </div>
+
+    <!-- MODAL : Détail Produit -->
+    <div id="product-detail-modal" class="modal-overlay fixed inset-0 z-[110] flex items-end sm:items-center justify-center sm:p-4">
+        <div class="modal-content bg-white sm:rounded-2xl shadow-2xl w-full sm:max-w-4xl overflow-hidden flex flex-col sm:flex-row h-[90vh] sm:h-auto sm:max-h-[85vh] rounded-t-3xl relative">
+            <button onclick="closeProductDetails()" class="absolute top-4 right-4 bg-white text-gray-600 hover:text-gray-900 p-2 rounded-full shadow-md z-20 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div id="detail-img-container" class="w-full sm:w-1/2 bg-gray-50 relative flex items-center justify-center shrink-0 cursor-zoom-in h-64 sm:h-auto border-r border-gray-100" onclick="openLightbox(this.querySelector('img').src)">
+                <img id="detail-img" src="" alt="Produit" class="w-full h-full object-contain p-4 sm:p-8 mix-blend-multiply">
+                <div class="absolute bottom-4 left-4 bg-white/80 backdrop-blur px-3 py-1.5 rounded-lg shadow-sm text-xs font-bold text-gray-700 flex items-center">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg> Cliquez pour zoomer
+                </div>
+                <div id="detail-badges" class="absolute top-4 left-4 flex flex-col gap-2 z-10"></div>
+            </div>
+            
+            <div class="w-full sm:w-1/2 p-6 sm:p-8 flex flex-col flex-grow overflow-y-auto pb-safe">
+                <div class="mb-4">
+                    <span id="detail-category" class="text-xs font-bold uppercase tracking-wider text-brand-accent bg-blue-50 px-2.5 py-1 rounded-md mb-3 inline-block">Catégorie</span>
+                    <h2 id="detail-title" class="text-2xl sm:text-3xl font-serif font-bold text-gray-900 leading-tight mb-2">Nom du Produit</h2>
+                    <div class="flex items-end gap-3 mt-4 mb-6">
+                        <span id="detail-price" class="text-3xl font-bold text-gray-900">0 FCFA</span>
+                        <span id="detail-old-price" class="text-lg text-gray-400 line-through font-medium hidden">0 FCFA</span>
+                    </div>
+                </div>
+                
+                <div class="prose prose-sm text-gray-600 mb-8 flex-grow">
+                    <p id="detail-desc" class="leading-relaxed">Description détaillée du produit...</p>
+                </div>
+
+                <div id="detail-variantes-container" class="mb-6 hidden">
+                    <label class="block text-sm font-bold text-gray-900 mb-2">Options disponibles :</label>
+                    <select id="detail-variante-select" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-brand-accent focus:border-brand-accent bg-white font-medium shadow-sm outline-none transition"></select>
+                </div>
+                
+                <div class="mt-auto flex gap-3 w-full">
+                    <button id="detail-btn-cart" class="flex-none p-4 bg-blue-50 text-brand-accent hover:bg-blue-100 rounded-xl transition font-bold flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </button>
+                    <button id="detail-btn-order" class="flex-grow py-4 bg-brand-dark text-white rounded-xl transition font-bold text-base hover:bg-brand-accent hover:shadow-lg hover:shadow-blue-500/30">
+                        Commander maintenant
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL : Services (Détail de l'offre cliquée) -->
+    <div id="service-modal" class="modal-overlay fixed inset-0 z-[105] flex items-end sm:items-center justify-center sm:p-4">
+        <div id="service-modal-inner" class="modal-content bg-white sm:rounded-2xl shadow-2xl w-full sm:max-w-5xl overflow-hidden flex flex-col h-[90vh] sm:h-[85vh] rounded-t-3xl relative transition-colors duration-200">
+            <button id="service-modal-close-btn" onclick="closeServiceModal()" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full z-20 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div id="service-modal-content" class="w-full h-full overflow-y-auto flex flex-col">
+                <!-- Rempli dynamiquement en JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Tiroir du Panier -->
+    <div id="cart-overlay" class="drawer-overlay fixed inset-0 bg-brand-dark/50 z-50 backdrop-blur-sm" onclick="toggleCart()"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-50 flex flex-col">
+        <div class="px-4 sm:px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+            <h3 class="font-serif font-bold text-xl text-brand-dark flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                Votre Panier
+            </h3>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600 transition p-2 bg-gray-100 rounded-full">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="cart-items" class="flex-grow overflow-y-auto p-4 sm:p-6 space-y-4"></div>
+        
+        <div class="border-t p-4 sm:p-6 bg-gray-50 pb-safe space-y-4">
+            <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+                <label class="block text-xs font-bold text-gray-700 mb-1">Avez-vous un code promo ?</label>
+                <div class="flex space-x-2">
+                    <input type="text" id="promo-code-input" placeholder="Ex: TERRA10 ou SOLDE" class="w-full uppercase border border-gray-300 rounded-md px-3 py-1.5 text-xs focus:ring-brand-accent focus:outline-none font-medium">
+                    <button onclick="applyPromoCode()" class="bg-brand-dark text-white px-3 py-1.5 rounded-md text-xs font-bold hover:bg-black transition shrink-0">Appliquer</button>
+                </div>
+                <p id="promo-message" class="text-xs mt-1.5 hidden font-medium"></p>
+            </div>
+
+            <div class="space-y-1.5 text-sm">
+                <div class="flex justify-between text-gray-600">
+                    <span>Sous-total</span>
+                    <span id="cart-subtotal">0 FCFA</span>
+                </div>
+                <div id="promo-discount-row" class="flex justify-between text-green-600 font-medium hidden">
+                    <span>Remise (<span id="promo-code-name"></span>)</span>
+                    <span id="cart-discount">-0 FCFA</span>
+                </div>
+                <div class="flex justify-between items-center text-lg sm:text-xl font-bold text-brand-dark pt-2 border-t border-gray-200">
+                    <span>Total à payer</span>
+                    <span id="cart-total">0 FCFA</span>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+                <button onclick="clearCart()" id="clear-cart-btn" class="text-xs text-red-500 hover:text-red-600 font-medium transition hidden">
+                    Vider le panier
+                </button>
+            </div>
+
+            <button onclick="openCheckout()" id="checkout-btn" class="w-full bg-brand-accent text-white py-3.5 rounded-lg font-bold text-base hover:bg-brand-accentHover transition shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
+                Valider la commande
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL : Checkout -->
+    <div id="checkout-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4">
+        <div class="modal-content bg-white sm:rounded-xl shadow-2xl w-full sm:max-w-lg overflow-hidden flex flex-col h-[90vh] sm:h-auto sm:max-h-[95vh] rounded-t-2xl">
+            <div class="px-4 sm:px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 sticky top-0 z-10 shrink-0">
+                <h3 class="font-serif font-bold text-xl text-brand-dark">Finaliser la commande</h3>
+                <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-gray-600 transition bg-white rounded-full p-2 shadow-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto pb-safe flex-grow">
+                <div class="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-100 flex justify-between items-center">
+                    <span class="text-brand-accent font-semibold text-sm sm:text-base" id="checkout-item-count">0 article(s)</span>
+                    <span class="font-bold text-lg sm:text-xl text-brand-dark" id="checkout-total-price">0 FCFA</span>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-4 flex items-center text-sm sm:text-base">
+                    <svg class="w-5 h-5 mr-2 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Informations de livraison
+                </h4>
+                <div class="space-y-4 mb-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Nom complet *</label>
+                            <input type="text" id="checkout-nom" placeholder="Ex: Jean Dupont" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Téléphone *</label>
+                            <input type="tel" id="checkout-tel" placeholder="Ex: 97 00 00 00" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Ville *</label>
+                        <select id="checkout-ville" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
+                            <option value="Cotonou">Cotonou</option>
+                            <option value="Abomey-Calavi">Abomey-Calavi</option>
+                            <option value="Porto-Novo">Porto-Novo</option>
+                            <option value="Autre">Autre (Préciser dans l'adresse)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Adresse détaillée *</label>
+                        <input type="text" id="checkout-adresse" placeholder="Quartier, rue, repère..." class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
+                    </div>
+                </div>
+                <h4 class="font-bold text-gray-800 mb-4 text-sm sm:text-base">Mode de paiement</h4>
+                <div class="space-y-3">
+                    <button onclick="processCheckout('WhatsApp')" class="w-full flex items-center justify-between p-4 border border-green-500 bg-green-50 rounded-xl hover:bg-green-100 transition group shadow-sm">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white transition shadow-md shadow-green-500/40 shrink-0">
+                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.22-.453-2.333-1.455-1.46-1.31-2.059-2.888-2.122-2.996-.064-.109-.505-.671-.505-1.284 0-.614.318-.918.435-1.036.118-.119.254-.149.338-.149.085 0 .17.001.242.004.075.004.172-.03.271.213.125.307.427 1.045.465 1.121.038.076.064.164.015.263-.048.099-.074.159-.148.248-.076.089-.158.196-.227.272-.075.084-.156.176-.068.329.088.152.392.646.839 1.049.578.522 1.066.685 1.217.76.152.075.242.064.333-.039.091-.104.392-.454.498-.609.106-.155.212-.129.349-.079.137.05 1.157.545 1.258.62.102.074.171.119.196.185.025.066.025.385-.119.79z"></path></svg>
+                            </div>
+                            <div class="text-left">
+                                <span class="block font-bold text-green-700 text-base">Commander via WhatsApp</span>
+                                <span class="block text-xs text-green-600">Paiement à la livraison possible</span>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Écran de Maintenance -->
+    <div id="maintenance-screen" class="hidden fixed inset-0 z-[95] bg-brand-dark text-white flex flex-col items-center justify-center text-center px-6">
+        <div class="flex items-start mb-6">
+            <span class="font-sans font-black text-4xl tracking-tighter">Terra</span>
+            <span class="text-lg font-bold ml-0.5">°</span>
+        </div>
+        <h2 class="text-2xl font-serif font-bold mb-3">Nous préparons quelque chose de mieux</h2>
+        <p class="text-gray-400 max-w-md">Le site est momentanément en maintenance. Revenez très bientôt, ou contactez-nous directement sur WhatsApp pour passer commande.</p>
+        <a id="maintenance-whatsapp-link" href="https://wa.me/2290147527920" target="_blank" class="mt-6 bg-green-500 hover:bg-green-600 transition text-white px-5 py-3 rounded-lg font-bold text-sm shadow-lg shadow-green-500/30">Nous contacter sur WhatsApp</a>
     </div>
 
     <!-- MODAL : Login Admin -->
@@ -508,7 +708,7 @@
                 </div>
             </div>
 
-            <!-- Onglet Gestion Commandes (Complet) -->
+            <!-- Onglet Gestion Commandes -->
             <div id="tab-orders" class="admin-tab-content hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
@@ -605,6 +805,105 @@
                     </div>
                 </div>
 
+                <!-- Gestion des Services (Teasers d'Accueil) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-6">
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-1">Services & Offres (Accueil)</h3>
+                        <p class="text-xs text-gray-500">Gérez le contenu des 4 cartes de services affichées sur la page d'accueil.</p>
+                    </div>
+                    
+                    <div class="space-y-4 border border-gray-100 rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-bold text-sm text-brand-dark flex items-center"><svg class="w-4 h-4 mr-1.5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> Carte 1 : Crédit</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Titre</label>
+                            <input type="text" id="set-srv-credit-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Description Courte</label>
+                            <textarea id="set-srv-credit-short" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Texte "Vos Engagements" (Détail Modal)</label>
+                            <textarea id="set-srv-credit-detail" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 border border-gray-100 rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-bold text-sm text-gray-900">Carte 2 : Électroménager</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Titre</label>
+                            <input type="text" id="set-srv-electro-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Description Courte</label>
+                            <textarea id="set-srv-electro-short" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Catégorie d'articles à afficher</label>
+                            <select id="set-srv-electro-cat" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white admin-cat-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 border border-gray-100 rounded-lg p-4 bg-gray-50">
+                        <h4 class="font-bold text-sm text-gray-900">Carte 3 : Aménagement</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Titre</label>
+                            <input type="text" id="set-srv-amenagement-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Description Courte</label>
+                            <textarea id="set-srv-amenagement-short" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Catégorie d'articles à afficher</label>
+                            <select id="set-srv-amenagement-cat" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white admin-cat-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 border border-green-100 rounded-lg p-4 bg-green-50/30">
+                        <h4 class="font-bold text-sm text-green-700">Carte 4 : Livraison</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Titre</label>
+                            <input type="text" id="set-srv-livraison-title" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Description Courte</label>
+                            <textarea id="set-srv-livraison-short" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Détails (affichés dans la modale)</label>
+                            <textarea id="set-srv-livraison-detail" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestion des Images de Collections (MODIFICATION #002) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-6">
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-bold text-xl text-gray-900">Images des Collections</h3>
+                            <span class="bg-green-100 text-green-800 text-[10px] font-bold px-2.5 py-1 rounded-full border border-green-200 shadow-sm uppercase tracking-wider">🟢 VERSION SCRIPT : 2026-08-31-DIAG-01</span>
+                        </div>
+                        <p class="text-sm text-gray-500">Définissez une image de couverture pour chaque catégorie affichée sur le site.</p>
+                    </div>
+                    
+                    <div id="settings-category-images-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Généré dynamiquement en JS (renderCategoryImagesSettings) -->
+                    </div>
+
+                    <div class="pt-6 border-t border-gray-100 flex flex-col gap-4">
+                        <div id="diagnostic-log-container" class="w-full bg-gray-900 text-green-400 font-mono text-[10px] sm:text-xs p-4 rounded-lg hidden flex-col gap-1 max-h-64 overflow-y-auto shadow-inner border border-gray-700">
+                            <!-- Logs injected here -->
+                        </div>
+                        <div class="flex items-center justify-between w-full">
+                            <span id="cat-images-save-status" class="text-sm font-medium text-gray-500">Prêt</span>
+                            <button onclick="saveAllCategoryImages()" id="btn-save-cat-images" class="bg-brand-accent text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-brand-accentHover transition shadow-sm">
+                                Enregistrer toutes les images
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Sécurité & Maintenance -->
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 space-y-4">
                     <h3 class="font-bold text-gray-900">Sécurité & Maintenance</h3>
@@ -627,17 +926,6 @@
         </main>
     </div>
 
-    <!-- Écran de Maintenance -->
-    <div id="maintenance-screen" class="hidden fixed inset-0 z-[95] bg-brand-dark text-white flex flex-col items-center justify-center text-center px-6">
-        <div class="flex items-start mb-6">
-            <span class="font-sans font-black text-4xl tracking-tighter">Terra</span>
-            <span class="text-lg font-bold ml-0.5">°</span>
-        </div>
-        <h2 class="text-2xl font-serif font-bold mb-3">Nous préparons quelque chose de mieux</h2>
-        <p class="text-gray-400 max-w-md">Le site est momentanément en maintenance. Revenez très bientôt, ou contactez-nous directement sur WhatsApp pour passer commande.</p>
-        <a id="maintenance-whatsapp-link" href="https://wa.me/2290147527920" target="_blank" class="mt-6 bg-green-500 hover:bg-green-600 transition text-white px-5 py-3 rounded-lg font-bold text-sm shadow-lg shadow-green-500/30">Nous contacter sur WhatsApp</a>
-    </div>
-
     <!-- MODAL : Ajout/Modification Produit Admin -->
     <div id="admin-product-modal" class="modal-overlay fixed inset-0 z-[80] flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[95vh]">
@@ -649,10 +937,10 @@
             <div class="p-6 overflow-y-auto flex-grow space-y-4">
                 <input type="hidden" id="prod-id">
                 
-                <div id="matelas-quick-fill-container" class="mb-2 p-3 bg-blue-50 border border-blue-100 rounded-lg">
-                    <label class="block text-xs font-bold text-brand-accent mb-2">⚡ Remplissage Rapide (Catalogue Matelas)</label>
+                <div id="quick-fill-container" class="mb-2 p-3 bg-blue-50 border border-blue-100 rounded-lg hidden">
+                    <label id="quick-fill-label" class="block text-xs font-bold text-brand-accent mb-2">⚡ Remplissage Rapide</label>
                     <select id="quick-template" onchange="applyTemplate()" class="w-full border border-blue-200 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white text-gray-700 font-medium">
-                        <option value="">-- Choisir un modèle de matelas --</option>
+                        <option value="">-- Choisir un modèle --</option>
                     </select>
                 </div>
                 
@@ -679,6 +967,7 @@
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Catégorie *</label>
                         <select id="prod-category" onchange="toggleQuickFillVisibility()" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white">
                             <option value="Matelas">Matelas</option>
+                            <option value="TV LG LED">TV LG LED</option>
                             <option value="TV LG Smart">TV LG Smart</option>
                             <option value="Siège Balançoire">Siège Balançoire</option>
                             <option value="Table à Manger">Table à Manger</option>
@@ -730,119 +1019,6 @@
         </div>
     </div>
 
-    <!-- Tiroir du Panier -->
-    <div id="cart-overlay" class="drawer-overlay fixed inset-0 bg-brand-dark/50 z-50 backdrop-blur-sm" onclick="toggleCart()"></div>
-    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white shadow-2xl z-50 flex flex-col">
-        <div class="px-4 sm:px-6 py-4 border-b flex justify-between items-center bg-gray-50">
-            <h3 class="font-serif font-bold text-xl text-brand-dark flex items-center">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                Votre Panier
-            </h3>
-            <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600 transition p-2 bg-gray-100 rounded-full">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-        <div id="cart-items" class="flex-grow overflow-y-auto p-4 sm:p-6 space-y-4"></div>
-        
-        <div class="border-t p-4 sm:p-6 bg-gray-50 pb-safe space-y-4">
-            
-            <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
-                <label class="block text-xs font-bold text-gray-700 mb-1">Avez-vous un code promo ?</label>
-                <div class="flex space-x-2">
-                    <input type="text" id="promo-code-input" placeholder="Ex: TERRA10 ou SOLDE" class="w-full uppercase border border-gray-300 rounded-md px-3 py-1.5 text-xs focus:ring-brand-accent focus:outline-none font-medium">
-                    <button onclick="applyPromoCode()" class="bg-brand-dark text-white px-3 py-1.5 rounded-md text-xs font-bold hover:bg-black transition shrink-0">Appliquer</button>
-                </div>
-                <p id="promo-message" class="text-xs mt-1.5 hidden font-medium"></p>
-            </div>
-
-            <div class="space-y-1.5 text-sm">
-                <div class="flex justify-between text-gray-600">
-                    <span>Sous-total</span>
-                    <span id="cart-subtotal">0 FCFA</span>
-                </div>
-                <div id="promo-discount-row" class="flex justify-between text-green-600 font-medium hidden">
-                    <span>Remise (<span id="promo-code-name"></span>)</span>
-                    <span id="cart-discount">-0 FCFA</span>
-                </div>
-                <div class="flex justify-between items-center text-lg sm:text-xl font-bold text-brand-dark pt-2 border-t border-gray-200">
-                    <span>Total à payer</span>
-                    <span id="cart-total">0 FCFA</span>
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center">
-                <button onclick="clearCart()" id="clear-cart-btn" class="text-xs text-red-500 hover:text-red-600 font-medium transition hidden">
-                    Vider le panier
-                </button>
-            </div>
-
-            <button onclick="openCheckout()" id="checkout-btn" class="w-full bg-brand-accent text-white py-3.5 rounded-lg font-bold text-base hover:bg-brand-accentHover transition shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
-                Valider la commande
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL : Checkout -->
-    <div id="checkout-modal" class="modal-overlay fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4">
-        <div class="modal-content bg-white sm:rounded-xl shadow-2xl w-full sm:max-w-lg overflow-hidden flex flex-col h-[90vh] sm:h-auto sm:max-h-[95vh] rounded-t-2xl">
-            <div class="px-4 sm:px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 sticky top-0 z-10 shrink-0">
-                <h3 class="font-serif font-bold text-xl text-brand-dark">Finaliser la commande</h3>
-                <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-gray-600 transition bg-white rounded-full p-2 shadow-sm">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            <div class="p-4 sm:p-6 overflow-y-auto pb-safe flex-grow">
-                <div class="bg-blue-50 rounded-lg p-4 mb-6 border border-blue-100 flex justify-between items-center">
-                    <span class="text-brand-accent font-semibold text-sm sm:text-base" id="checkout-item-count">0 article(s)</span>
-                    <span class="font-bold text-lg sm:text-xl text-brand-dark" id="checkout-total-price">0 FCFA</span>
-                </div>
-                <h4 class="font-bold text-gray-800 mb-4 flex items-center text-sm sm:text-base">
-                    <svg class="w-5 h-5 mr-2 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    Informations de livraison
-                </h4>
-                <div class="space-y-4 mb-8">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">Nom complet *</label>
-                            <input type="text" id="checkout-nom" placeholder="Ex: Jean Dupont" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1">Téléphone *</label>
-                            <input type="tel" id="checkout-tel" placeholder="Ex: 97 00 00 00" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Ville *</label>
-                        <select id="checkout-ville" class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent bg-white">
-                            <option value="Cotonou">Cotonou</option>
-                            <option value="Abomey-Calavi">Abomey-Calavi</option>
-                            <option value="Porto-Novo">Porto-Novo</option>
-                            <option value="Autre">Autre (Préciser dans l'adresse)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Adresse détaillée *</label>
-                        <input type="text" id="checkout-adresse" placeholder="Quartier, rue, repère..." class="w-full border border-gray-300 rounded-md px-3 py-3 sm:py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent">
-                    </div>
-                </div>
-                <h4 class="font-bold text-gray-800 mb-4 text-sm sm:text-base">Mode de paiement</h4>
-                <div class="space-y-3">
-                    <button onclick="processCheckout('WhatsApp')" class="w-full flex items-center justify-between p-4 border border-green-500 bg-green-50 rounded-xl hover:bg-green-100 transition group shadow-sm">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white transition shadow-md shadow-green-500/40 shrink-0">
-                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.22-.453-2.333-1.455-1.46-1.31-2.059-2.888-2.122-2.996-.064-.109-.505-.671-.505-1.284 0-.614.318-.918.435-1.036.118-.119.254-.149.338-.149.085 0 .17.001.242.004.075.004.172-.03.271.213.125.307.427 1.045.465 1.121.038.076.064.164.015.263-.048.099-.074.159-.148.248-.076.089-.158.196-.227.272-.075.084-.156.176-.068.329.088.152.392.646.839 1.049.578.522 1.066.685 1.217.76.152.075.242.064.333-.039.091-.104.392-.454.498-.609.106-.155.212-.129.349-.079.137.05 1.157.545 1.258.62.102.074.171.119.196.185.025.066.025.385-.119.79z"></path></svg>
-                            </div>
-                            <div class="text-left">
-                                <span class="block font-bold text-green-700 text-base">Commander via WhatsApp</span>
-                                <span class="block text-xs text-green-600">Paiement à la livraison possible</span>
-                            </div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Conteneur de Notifications (Toasts) -->
     <div id="toast-container" class="flex flex-col gap-2"></div>
 
@@ -877,6 +1053,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Ajout des imports Firebase Storage pour MODIFICATION #002
+        import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBvU2Vb7JyWy5HXPCXm89g8oZTzN6KfCUA",
@@ -890,6 +1068,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app); // Initialisation Storage
         
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'terra-market-core';
 
@@ -903,9 +1082,33 @@
         let appliedDiscount = 0;
         let currentPromo = null;
         let currentActiveCategory = "";
+        let unsubscribeOrders = null;
+
+        const DEFAULT_CAT_STYLE = {
+            format: 'auto', // auto, square, landscape, portrait, wide
+            objectFit: 'cover', // cover, contain
+            objectPosition: 'center', // center, top, bottom, left, right
+            textColor: '#ffffff',
+            bgColor: '#ffffff',
+            overlayEnabled: true,
+            overlayColor: '#000000',
+            overlayOpacity: 0.4,
+            showTitle: true,
+            titlePosition: 'bottom', // top, center, bottom
+            titleSize: 'md', // sm, md, lg
+            showButton: false,
+            buttonText: 'Voir les produits →',
+            buttonStyle: 'rounded', // classic, rounded, pill
+            buttonBgColor: '#2563EB',
+            buttonTextColor: '#ffffff',
+            animCard: 'combined', // none, elevate, zoom, combined
+            animButton: 'fade' // none, fade, slide, pulse
+        };
+        let pendingCategoryStyles = {}; // Stockage temporaire des styles en cours d'edition
 
         const DEFAULT_WHATSAPP_TEMPLATE = "Bonjour Terra Market 👋,\nJe souhaite valider ma commande :\n\n*--- MES INFORMATIONS ---*\n👤 Nom : {nom}\n📞 Tél : {tel}\n📍 Adresse : {adresse}, {ville}\n\n*--- MON PANIER ---*\n{items}\n{promo}\n*💰 TOTAL À PAYER : {total}*\n\nMerci !";
 
+        // Paramètres par défaut
         let settings = {
             heroTitle: "Le confort que vous méritez",
             heroSubtitle: "Équipez votre intérieur dès aujourd'hui et payez progressivement à votre rythme.",
@@ -915,14 +1118,22 @@
             freeShippingThreshold: 0,
             whatsappTemplate: DEFAULT_WHATSAPP_TEMPLATE,
             maintenanceMode: false,
+            categoryImages: {},
+            categoryStyles: {}, // Ajout du stockage des styles personnalises
             promoCodes: [
                 { code: 'TERRA10', type: 'percent', value: 10 },
                 { code: 'SOLDE', type: 'fixed', value: 5000 },
                 { code: 'LIVRAISON', type: 'fixed', value: 2000 }
-            ]
+            ],
+            services: {
+                credit: { title: "Meubles à crédit", shortDesc: "Repartez avec vos meubles dès aujourd'hui et étalez vos paiements en toute sérénité.", detailedDesc: "En signant le contrat, vous vous engagez à respecter les dates d'échéance convenues et à conserver les articles en bon état. Tout retard peut entraîner des pénalités." },
+                electro: { title: "Électroménager", shortDesc: "Découvrez notre gamme de téléviseurs et d'appareils de dernière génération.", linkedCategory: "TV LG Smart" },
+                amenagement: { title: "Aménagement", shortDesc: "Des meubles modernes, lits luxueux et salons élégants pour sublimer votre intérieur.", linkedCategory: "Canapé" },
+                livraison: { title: "Livraison à domicile", shortDesc: "Profitez d'un service de livraison rapide et soigné directement à votre adresse.", detailedDesc: "Nous offrons un service de livraison sécurisé. Contactez-nous pour connaître les tarifs selon votre zone." }
+            }
         };
 
-        // Gestion Modale de confirmation unifiée (remplace window.confirm)
+        // Gestion Modale de confirmation
         let confirmAction = null;
         window.openConfirmModal = (title, msg, onConfirm) => {
             document.getElementById('confirm-title').innerText = title;
@@ -939,7 +1150,6 @@
             closeConfirmModal();
         });
 
-        // BASE DE DONNEES DES MATELAS POUR REMPLISSAGE RAPIDE
         const MATELAS_TEMPLATES = [
             { name: "Matelas 1 Place - Spécial Foam (Ep. 15)", price: 22000, desc: "Modèle Spécial Foam" },
             { name: "Matelas 1 Place - Spécial Foam (Ep. 20)", price: 32000, desc: "Modèle Spécial Foam" },
@@ -980,50 +1190,104 @@
             { name: "Matelas 3 Pl. - Médical Bénin Conf. (Ep. 20)", price: 167000, desc: "Médical Bénin Confort ⭐ Garantie 10 ans" }
         ];
 
-        function initTemplates() {
-            const select = document.getElementById('quick-template');
-            if(!select) return;
-            let currentGroup = "";
-            let optgroup = null;
-            MATELAS_TEMPLATES.forEach((tmpl, index) => {
-                let groupName = tmpl.name.includes("1 Place") ? "🛏️ MATELAS 1 PLACE" : 
-                                tmpl.name.includes("2 Pl") ? "🛏️ MATELAS 2 PLACES" : "🛏️ MATELAS 3 PLACES";
-                if (currentGroup !== groupName) {
-                    currentGroup = groupName;
-                    optgroup = document.createElement('optgroup');
-                    optgroup.label = groupName;
-                    select.appendChild(optgroup);
-                }
-                const opt = document.createElement('option');
-                opt.value = index;
-                opt.text = `${tmpl.name} - ${formatPrice(tmpl.price)}`;
-                optgroup.appendChild(opt);
-            });
-        }
-
-        window.applyTemplate = () => {
-            const val = document.getElementById('quick-template').value;
-            if(val === "") return;
-            const tmpl = MATELAS_TEMPLATES[val];
-            document.getElementById('prod-name').value = tmpl.name;
-            document.getElementById('prod-price').value = tmpl.price;
-            document.getElementById('prod-old-price').value = '';
-            document.getElementById('prod-desc').value = tmpl.desc;
-            document.getElementById('prod-category').value = 'Matelas';
-            window.toggleQuickFillVisibility();
-            showToast("Formulaire auto-rempli avec succès !", "success");
-        };
+        // MODIFICATION #003 : Base de données stricte pour les Téléviseurs LG
+        const TV_TEMPLATES = [
+            // TV LG LED
+            { name: "LG 32 pouces LED", price: 55000, desc: "Téléviseur LG LED 32 pouces.", cat: "TV LG LED" },
+            { name: "LG 45 pouces LED", price: 85000, desc: "Téléviseur LG LED 45 pouces.", cat: "TV LG LED" },
+            
+            // TV LG SMART
+            { name: "LG 32 pouces Smart", price: 70000, desc: "Téléviseur LG Smart 32 pouces.", cat: "TV LG Smart" },
+            { name: "LG 45 pouces Smart", price: 95000, desc: "Téléviseur LG Smart 45 pouces.", cat: "TV LG Smart" },
+            { name: "LG 50 pouces Smart", price: 100000, desc: "Téléviseur LG Smart 50 pouces.", cat: "TV LG Smart" },
+            { name: "LG 55 pouces Smart", price: 150000, desc: "Téléviseur LG Smart 55 pouces.", cat: "TV LG Smart" },
+            { name: "LG 65 pouces Smart", price: 180000, desc: "Téléviseur LG Smart 65 pouces.", cat: "TV LG Smart" },
+            { name: "LG 70 pouces Smart", price: 195000, desc: "Téléviseur LG Smart 70 pouces.", cat: "TV LG Smart" },
+            { name: "LG 75 pouces Smart", price: 275000, desc: "Téléviseur LG Smart 75 pouces.", cat: "TV LG Smart" },
+            { name: "LG 85 pouces Smart", price: 465000, desc: "Téléviseur LG Smart 85 pouces.", cat: "TV LG Smart" },
+            { name: "LG 100 pouces Smart", price: 650000, desc: "Téléviseur LG Smart 100 pouces.", cat: "TV LG Smart" }
+        ];
 
         window.toggleQuickFillVisibility = () => {
             const category = document.getElementById('prod-category').value;
-            const container = document.getElementById('matelas-quick-fill-container');
-            if (container) {
-                if (category === 'Matelas') container.classList.remove('hidden');
-                else container.classList.add('hidden');
+            const container = document.getElementById('quick-fill-container');
+            const label = document.getElementById('quick-fill-label');
+            const select = document.getElementById('quick-template');
+            
+            if (!container) return;
+
+            select.innerHTML = '<option value="">-- Choisir un modèle --</option>';
+
+            if (category === 'Matelas') {
+                label.innerText = '⚡ Remplissage Rapide (Catalogue Matelas)';
+                let currentGroup = "";
+                let optgroup = null;
+                MATELAS_TEMPLATES.forEach((tmpl, index) => {
+                    let groupName = tmpl.name.includes("1 Place") ? "🛏️ MATELAS 1 PLACE" : 
+                                    tmpl.name.includes("2 Pl") ? "🛏️ MATELAS 2 PLACES" : "🛏️ MATELAS 3 PLACES";
+                    if (currentGroup !== groupName) {
+                        currentGroup = groupName;
+                        optgroup = document.createElement('optgroup');
+                        optgroup.label = groupName;
+                        select.appendChild(optgroup);
+                    }
+                    const opt = document.createElement('option');
+                    opt.value = 'matelas_' + index;
+                    opt.text = `${tmpl.name} - ${formatPrice(tmpl.price)}`;
+                    optgroup.appendChild(opt);
+                });
+                container.classList.remove('hidden');
+            } else if (category === 'TV LG LED' || category === 'TV LG Smart') {
+                label.innerText = `⚡ Remplissage Rapide (${category})`;
+                
+                let count = 0;
+                TV_TEMPLATES.forEach((tmpl, index) => {
+                    if (category === tmpl.cat) {
+                        const opt = document.createElement('option');
+                        opt.value = 'tv_' + index;
+                        opt.text = `${tmpl.name} - ${formatPrice(tmpl.price)}`;
+                        select.appendChild(opt);
+                        count++;
+                    }
+                });
+
+                if (count > 0) {
+                    container.classList.remove('hidden');
+                } else {
+                    container.classList.add('hidden');
+                }
+            } else {
+                container.classList.add('hidden');
             }
         };
 
-        // FONCTION DE COMPRESSION D'IMAGE (Canvas to Base64)
+        window.applyTemplate = () => {
+            const val = document.getElementById('quick-template').value;
+            if(!val) return;
+            
+            let tmpl = null;
+            let cat = '';
+            
+            if (val.startsWith('matelas_')) {
+                const idx = parseInt(val.replace('matelas_', ''));
+                tmpl = MATELAS_TEMPLATES[idx];
+                cat = 'Matelas';
+            } else if (val.startsWith('tv_')) {
+                const idx = parseInt(val.replace('tv_', ''));
+                tmpl = TV_TEMPLATES[idx];
+                cat = tmpl.cat;
+            }
+
+            if (tmpl) {
+                document.getElementById('prod-name').value = tmpl.name;
+                document.getElementById('prod-price').value = tmpl.price;
+                document.getElementById('prod-old-price').value = '';
+                document.getElementById('prod-desc').value = tmpl.desc;
+                document.getElementById('prod-category').value = cat;
+                showToast("Formulaire auto-rempli avec succès !", "success");
+            }
+        };
+
         function compressImage(file, maxWidth = 800, quality = 0.75) {
             return new Promise((resolve, reject) => {
                 if (!file) {
@@ -1047,7 +1311,7 @@
                         ctx.fillStyle = "#FFFFFF";
                         ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', quality)); // Renvoie une Data URL base64 optimisée
+                        resolve(canvas.toDataURL('image/jpeg', quality));
                     };
                     img.onerror = error => reject(new Error("Erreur de lecture de l'image."));
                     img.src = event.target.result;
@@ -1057,7 +1321,6 @@
             });
         }
 
-        // INITIALISATION FIREBASE
         async function initFirebase() {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -1073,11 +1336,15 @@
                     user = userCredential.user;
                 }
                 
-                // Chargement en temps réel des produits
+                // Chargement des produits
                 const productsRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
                 onSnapshot(productsRef, (snapshot) => {
                     products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     renderCategories();
+                    populateAdminCategorySelects();
+                    if (document.getElementById('tab-settings') && !document.getElementById('tab-settings').classList.contains('hidden')) {
+                        if (typeof renderCategoryImagesSettings === 'function') renderCategoryImagesSettings();
+                    }
                     if(document.getElementById('admin-view').classList.contains('active')) renderAdminProducts();
                     if (!document.getElementById('category-detail-view').classList.contains('hidden') && currentActiveCategory) {
                         renderCategoryProducts(currentActiveCategory);
@@ -1088,25 +1355,16 @@
                     }
                 }, (error) => console.error("Erreur Firestore (Produits):", error));
 
-                // Chargement en temps réel des commandes
-                const ordersRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
-                onSnapshot(ordersRef, (snapshot) => {
-                    orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    orders.sort((a, b) => b.createdAt - a.createdAt);
-                    if(document.getElementById('admin-view').classList.contains('active')) {
-                        renderOrdersDash();
-                        renderOrdersTableFull();
-                        updateDashboardStats();
-                    }
-                }, (error) => console.error("Erreur Firestore (Commandes):", error));
-
-                // Chargement en temps réel des paramètres de la boutique
+                // Chargement des paramètres
                 const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'store');
                 onSnapshot(settingsRef, (snap) => {
                     if (snap.exists()) {
                         settings = { ...settings, ...snap.data() };
+                        if (!settings.categoryImages) settings.categoryImages = {};
+                        if (!settings.categoryStyles) settings.categoryStyles = {};
                     }
                     applySettingsToStorefront();
+                    renderCategories();
                     if (document.getElementById('tab-settings') && !document.getElementById('tab-settings').classList.contains('hidden')) {
                         renderSettingsForm();
                     }
@@ -1118,14 +1376,13 @@
             }
         }
 
-        // APPLICATION DES PARAMETRES (Storefront & Admin)
         function applySettingsToStorefront() {
             const heroTitleEl = document.getElementById('hero-title');
-            if (heroTitleEl) heroTitleEl.innerText = settings.heroTitle;
+            if (heroTitleEl) heroTitleEl.innerText = settings.heroTitle || 'Le confort que vous méritez';
             const heroSubEl = document.getElementById('hero-subtitle');
-            if (heroSubEl) heroSubEl.innerText = settings.heroSubtitle;
+            if (heroSubEl) heroSubEl.innerText = settings.heroSubtitle || 'Équipez votre intérieur dès aujourd\'hui...';
             const addrEl = document.getElementById('store-address-text');
-            if (addrEl) addrEl.innerText = settings.address;
+            if (addrEl) addrEl.innerText = settings.address || 'Bénin';
 
             const waDigits = (settings.whatsapp || '').replace(/[^0-9]/g, '');
             const waFloatBtn = document.getElementById('whatsapp-float-btn');
@@ -1140,9 +1397,27 @@
             }
             const phoneSecondaryEl = document.getElementById('store-phone-secondary');
             if (phoneSecondaryEl) {
-                phoneSecondaryEl.innerText = settings.phoneSecondary;
+                phoneSecondaryEl.innerText = settings.phoneSecondary || '';
                 const secDigits = (settings.phoneSecondary || '').replace(/[^0-9]/g, '');
                 if (secDigits) phoneSecondaryEl.href = `tel:+${secDigits}`;
+            }
+
+            const s = settings.services || {};
+            if(document.getElementById('front-service-credit-title')) {
+                document.getElementById('front-service-credit-title').innerText = s.credit?.title || "Meubles à crédit";
+                document.getElementById('front-service-credit-desc').innerText = s.credit?.shortDesc || "";
+            }
+            if(document.getElementById('front-service-electro-title')) {
+                document.getElementById('front-service-electro-title').innerText = s.electro?.title || "Électroménager";
+                document.getElementById('front-service-electro-desc').innerText = s.electro?.shortDesc || "";
+            }
+            if(document.getElementById('front-service-amenagement-title')) {
+                document.getElementById('front-service-amenagement-title').innerText = s.amenagement?.title || "Aménagement";
+                document.getElementById('front-service-amenagement-desc').innerText = s.amenagement?.shortDesc || "";
+            }
+            if(document.getElementById('front-service-livraison-title')) {
+                document.getElementById('front-service-livraison-title').innerText = s.livraison?.title || "Livraison à domicile";
+                document.getElementById('front-service-livraison-desc').innerText = s.livraison?.shortDesc || "";
             }
 
             const maintenanceScreen = document.getElementById('maintenance-screen');
@@ -1162,6 +1437,37 @@
             document.getElementById('set-whatsapp-template').value = settings.whatsappTemplate || DEFAULT_WHATSAPP_TEMPLATE;
             setMaintenanceToggleUI(!!settings.maintenanceMode);
             renderPromoCodesList();
+
+            const s = settings.services || {};
+            document.getElementById('set-srv-credit-title').value = s.credit?.title || '';
+            document.getElementById('set-srv-credit-short').value = s.credit?.shortDesc || '';
+            document.getElementById('set-srv-credit-detail').value = s.credit?.detailedDesc || '';
+            
+            document.getElementById('set-srv-electro-title').value = s.electro?.title || '';
+            document.getElementById('set-srv-electro-short').value = s.electro?.shortDesc || '';
+            document.getElementById('set-srv-electro-cat').value = s.electro?.linkedCategory || '';
+            
+            document.getElementById('set-srv-amenagement-title').value = s.amenagement?.title || '';
+            document.getElementById('set-srv-amenagement-short').value = s.amenagement?.shortDesc || '';
+            document.getElementById('set-srv-amenagement-cat').value = s.amenagement?.linkedCategory || '';
+            
+            document.getElementById('set-srv-livraison-title').value = s.livraison?.title || '';
+            document.getElementById('set-srv-livraison-short').value = s.livraison?.shortDesc || '';
+            document.getElementById('set-srv-livraison-detail').value = s.livraison?.detailedDesc || '';
+            
+            if (typeof renderCategoryImagesSettings === 'function') renderCategoryImagesSettings();
+        }
+
+        function populateAdminCategorySelects() {
+            const selects = document.querySelectorAll('.admin-cat-select');
+            const cats = [...new Set(products.map(p => p.category))].sort();
+            const optionsHtml = `<option value="">-- Aucune catégorie liée --</option>` + 
+                                cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            selects.forEach(sel => {
+                const currentVal = sel.value;
+                sel.innerHTML = optionsHtml;
+                if(cats.includes(currentVal)) sel.value = currentVal;
+            });
         }
 
         function renderPromoCodesList() {
@@ -1201,6 +1507,582 @@
             const idx = row.getAttribute('data-idx');
             settings.promoCodes.splice(idx, 1);
             renderPromoCodesList();
+        };
+
+        let pendingCategoryImages = {};
+
+        window.buildCategoryCardHTML = (catName, displayImages, style, isPreview = false) => {
+            const safeCatId = catName.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+            const firstImg = displayImages[0] || '';
+            const hasMultipleImgs = displayImages.length > 1;
+
+            // Mapping des formats
+            let formatClass = 'h-40 sm:h-48'; // par défaut auto
+            if (style.format === 'square') formatClass = 'aspect-square h-auto';
+            if (style.format === 'landscape') formatClass = 'aspect-video h-auto';
+            if (style.format === 'portrait') formatClass = 'aspect-[3/4] h-auto';
+            if (style.format === 'wide') formatClass = 'aspect-[21/9] h-auto';
+
+            // Mapping position et taille de l'image
+            let objFitClass = style.objectFit === 'contain' ? 'object-contain' : 'object-cover';
+            let objPosClass = 'object-center';
+            if (style.objectPosition === 'top') objPosClass = 'object-top';
+            if (style.objectPosition === 'bottom') objPosClass = 'object-bottom';
+            if (style.objectPosition === 'left') objPosClass = 'object-left';
+            if (style.objectPosition === 'right') objPosClass = 'object-right';
+
+            // Mapping Animations Carte
+            let animCardClass = '';
+            let animImgClass = '';
+            if (style.animCard === 'elevate' || style.animCard === 'combined') {
+                animCardClass += ' hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300';
+            }
+            if (style.animCard === 'zoom' || style.animCard === 'combined') {
+                animImgClass = ' group-hover:scale-105 transition-transform duration-700';
+            }
+
+            // Mapping Overlay
+            let overlayHtml = '';
+            if (style.overlayEnabled) {
+                // Utilisation de hexToRgba pour une meilleure compatibilite si necessaire, mais opacity via Tailwind/style inline suffit
+                overlayHtml = `<div class="absolute inset-0 z-10 transition-opacity pointer-events-none group-hover:opacity-90" style="background-color: ${style.overlayColor}; opacity: ${style.overlayOpacity};"></div>`;
+            }
+
+            // Mapping Titre
+            let titlePosClass = 'justify-end items-center'; // bottom
+            if (style.titlePosition === 'top') titlePosClass = 'justify-start items-center pt-6';
+            if (style.titlePosition === 'center') titlePosClass = 'justify-center items-center';
+            
+            let titleSizeClass = 'text-lg sm:text-xl';
+            if (style.titleSize === 'sm') titleSizeClass = 'text-base sm:text-lg';
+            if (style.titleSize === 'lg') titleSizeClass = 'text-2xl sm:text-3xl tracking-tight';
+
+            // Mapping Bouton
+            let btnStyleClass = 'rounded-md';
+            if (style.buttonStyle === 'classic') btnStyleClass = 'rounded-none';
+            if (style.buttonStyle === 'pill') btnStyleClass = 'rounded-full px-6';
+
+            let animBtnClass = '';
+            if (style.animButton === 'fade') animBtnClass = 'opacity-0 group-hover:opacity-100 transition-opacity duration-300';
+            if (style.animButton === 'slide') animBtnClass = 'translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300';
+            if (style.animButton === 'pulse') animBtnClass = 'group-hover:animate-pulse transition-opacity duration-300';
+
+            const buttonHtml = style.showButton ? `
+                <div class="mt-4 ${animBtnClass}">
+                    <button type="button" class="px-4 py-2 text-sm font-bold shadow-lg border border-white/10 hover:brightness-110 transition-all" style="background-color: ${style.buttonBgColor}; color: ${style.buttonTextColor}; ${btnStyleClass.includes('rounded') ? '' : ''} " ${btnStyleClass.split(' ').map(c=>`class="${c}"`).join(' ')} >
+                        ${style.buttonText}
+                    </button>
+                </div>
+            ` : '';
+
+            const titleHtml = style.showTitle ? `
+                <h3 class="${titleSizeClass} font-bold leading-tight text-center drop-shadow-md z-20" style="color: ${style.textColor};">
+                    ${catName}
+                </h3>
+            ` : '';
+
+            // Evenements de clic : désactivés si en mode aperçu
+            const clickAttr = isPreview ? '' : `onclick="openCategory('${catName}')"`;
+            const idAttr = isPreview ? `id="preview-card-${safeCatId}"` : '';
+            const dataImagesAttr = hasMultipleImgs && !isPreview ? `data-images='${JSON.stringify(displayImages)}'` : '';
+            const sliderClass = hasMultipleImgs && !isPreview ? 'category-slider-img' : '';
+
+            return `
+                <div ${idAttr} ${clickAttr} class="perf-optimize group relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 category-card-container w-full ${formatClass} ${animCardClass} cursor-pointer" style="background-color: ${style.bgColor};" ${dataImagesAttr}>
+                    ${firstImg ? `<img src="${firstImg}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full ${objFitClass} ${objPosClass} ${animImgClass} ${sliderClass}" alt="${catName}">` : ''}
+                    ${overlayHtml}
+                    <div class="absolute inset-0 z-20 flex flex-col p-4 sm:p-5 ${titlePosClass}">
+                        ${titleHtml}
+                        ${buttonHtml}
+                    </div>
+                </div>
+            `;
+        };
+
+        window.renderCategoryImagesSettings = () => {
+            const grid = document.getElementById('settings-category-images-grid');
+            if(!grid) return;
+            const cats = [...new Set(products.map(p => p.category))].sort();
+            
+            if (cats.length === 0) {
+                grid.innerHTML = '<div class="col-span-full py-8 text-center text-gray-500 bg-gray-50 rounded-xl border border-gray-100">Aucune catégorie disponible. Ajoutez d\'abord des produits.</div>';
+                return;
+            }
+
+            let html = '';
+            cats.forEach(catName => {
+                const safeCatId = catName.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+                
+                // Image courante
+                let currentImg = '';
+                if (pendingCategoryImages[catName]) {
+                    // Si une image est en attente d'upload (fichier brut), l'URL blob est geree ailleurs, on s'assure juste d'avoir un fallback
+                    // Pour l'aperçu immediat on gere ça dans previewCatImage
+                    currentImg = (settings.categoryImages && settings.categoryImages[catName]) || '';
+                } else {
+                    currentImg = (settings.categoryImages && settings.categoryImages[catName]) || '';
+                }
+                
+                let isBase64 = currentImg.startsWith('data:');
+                let badge = isBase64 ? `<span class="absolute top-2 left-2 bg-yellow-100 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-50">Base64 (à migrer)</span>` : '';
+                
+                // Style courant (fusion avec par defaut)
+                const savedStyle = (settings.categoryStyles && settings.categoryStyles[catName]) || {};
+                const currentStyle = { ...DEFAULT_CAT_STYLE, ...savedStyle, ...(pendingCategoryStyles[catName] || {}) };
+                
+                // Initialisation du tableau d'image pour le rendu
+                const displayImages = currentImg ? [currentImg] : ["https://placehold.co/600x400/f3f4f6/a1a1aa?text=Image+Requise"];
+
+                // Generer la carte de previsualisation
+                const previewHtml = buildCategoryCardHTML(catName, displayImages, currentStyle, true);
+
+                html += `
+                    <div class="flex flex-col border border-gray-200 rounded-xl bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow h-[600px]">
+                        <!-- Zone d'aperçu (Fixe en haut) -->
+                        <div class="p-4 bg-gray-50 border-b border-gray-100 flex items-center justify-center relative min-h-[200px]" id="preview-container-${safeCatId}">
+                            ${badge}
+                            ${currentImg ? 
+                                `<button onclick="removeCategoryImage('${catName}')" class="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full shadow-md hover:bg-red-600 transition z-50" title="Supprimer l'image">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>` : ''
+                            }
+                            <div class="w-full flex items-center justify-center relative">
+                                ${previewHtml}
+                                <!-- Input File superposé de maniere invisible ou via label explicite en dessous -->
+                            </div>
+                        </div>
+
+                        <!-- Zone de controles (Scrollable) -->
+                        <div class="flex-grow overflow-y-auto p-4 space-y-5 bg-white custom-scrollbar">
+                            
+                            <!-- 1. Image de couverture -->
+                            <div class="space-y-2">
+                                <h5 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-b border-gray-100 pb-1">1. Image de couverture</h5>
+                                <label for="file-cat-${safeCatId}" class="flex items-center justify-center w-full bg-blue-50 text-brand-accent hover:bg-blue-100 px-3 py-2 rounded-lg text-xs font-bold cursor-pointer transition border border-blue-100">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                    ${currentImg ? 'Remplacer l\'image' : 'Choisir une image'}
+                                </label>
+                                <input type="file" id="file-cat-${safeCatId}" accept="image/png, image/jpeg, image/webp" class="hidden" onchange="previewCatImage(this, '${catName}', '${safeCatId}')">
+                            </div>
+
+                            <!-- 2. Format & Affichage -->
+                            <div class="space-y-3">
+                                <h5 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-b border-gray-100 pb-1">2. Format de la carte</h5>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Format</label>
+                                        <select onchange="updateCatStyle('${catName}', 'format', this.value)" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent">
+                                            <option value="auto" ${currentStyle.format === 'auto' ? 'selected' : ''}>Auto / Par défaut</option>
+                                            <option value="square" ${currentStyle.format === 'square' ? 'selected' : ''}>Carré (1:1)</option>
+                                            <option value="landscape" ${currentStyle.format === 'landscape' ? 'selected' : ''}>Paysage (16:9)</option>
+                                            <option value="portrait" ${currentStyle.format === 'portrait' ? 'selected' : ''}>Portrait (3:4)</option>
+                                            <option value="wide" ${currentStyle.format === 'wide' ? 'selected' : ''}>Large (21:9)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Remplissage image</label>
+                                        <select onchange="updateCatStyle('${catName}', 'objectFit', this.value)" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent">
+                                            <option value="cover" ${currentStyle.objectFit === 'cover' ? 'selected' : ''}>Couvrir (Cover)</option>
+                                            <option value="contain" ${currentStyle.objectFit === 'contain' ? 'selected' : ''}>Contenir (Contain)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Position de l'image</label>
+                                        <select onchange="updateCatStyle('${catName}', 'objectPosition', this.value)" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent">
+                                            <option value="center" ${currentStyle.objectPosition === 'center' ? 'selected' : ''}>Centré</option>
+                                            <option value="top" ${currentStyle.objectPosition === 'top' ? 'selected' : ''}>Aligné en haut</option>
+                                            <option value="bottom" ${currentStyle.objectPosition === 'bottom' ? 'selected' : ''}>Aligné en bas</option>
+                                            <option value="left" ${currentStyle.objectPosition === 'left' ? 'selected' : ''}>Aligné à gauche</option>
+                                            <option value="right" ${currentStyle.objectPosition === 'right' ? 'selected' : ''}>Aligné à droite</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Couleurs et Voile -->
+                            <div class="space-y-3">
+                                <h5 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-b border-gray-100 pb-1">3. Apparence Visuelle</h5>
+                                <div class="flex items-center justify-between">
+                                    <label class="text-xs font-semibold text-gray-600">Activer le voile sombre (Overlay)</label>
+                                    <input type="checkbox" onchange="updateCatStyle('${catName}', 'overlayEnabled', this.checked)" ${currentStyle.overlayEnabled ? 'checked' : ''} class="w-4 h-4 text-brand-accent rounded border-gray-300 focus:ring-brand-accent">
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Couleur fond carte</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" onchange="updateCatStyle('${catName}', 'bgColor', this.value)" value="${currentStyle.bgColor}" class="h-6 w-8 p-0 border-0 rounded cursor-pointer">
+                                            <span class="text-[10px] text-gray-400 font-mono">${currentStyle.bgColor}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Couleur overlay</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" onchange="updateCatStyle('${catName}', 'overlayColor', this.value)" value="${currentStyle.overlayColor}" class="h-6 w-8 p-0 border-0 rounded cursor-pointer" ${!currentStyle.overlayEnabled ? 'disabled' : ''}>
+                                            <span class="text-[10px] text-gray-400 font-mono">${currentStyle.overlayColor}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1 flex justify-between">
+                                            <span>Opacité overlay</span>
+                                            <span id="opacity-val-${safeCatId}">${Math.round(currentStyle.overlayOpacity * 100)}%</span>
+                                        </label>
+                                        <input type="range" min="0" max="1" step="0.1" value="${currentStyle.overlayOpacity}" oninput="document.getElementById('opacity-val-${safeCatId}').innerText = Math.round(this.value * 100) + '%'; updateCatStyle('${catName}', 'overlayOpacity', this.value)" class="w-full accent-brand-accent" ${!currentStyle.overlayEnabled ? 'disabled' : ''}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. Titre -->
+                            <div class="space-y-3">
+                                <h5 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-b border-gray-100 pb-1">4. Titre de la Collection</h5>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-xs font-semibold text-gray-600">Afficher le titre</label>
+                                    <input type="checkbox" onchange="updateCatStyle('${catName}', 'showTitle', this.checked)" ${currentStyle.showTitle ? 'checked' : ''} class="w-4 h-4 text-brand-accent rounded border-gray-300 focus:ring-brand-accent">
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Position</label>
+                                        <select onchange="updateCatStyle('${catName}', 'titlePosition', this.value)" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent" ${!currentStyle.showTitle ? 'disabled' : ''}>
+                                            <option value="top" ${currentStyle.titlePosition === 'top' ? 'selected' : ''}>En haut</option>
+                                            <option value="center" ${currentStyle.titlePosition === 'center' ? 'selected' : ''}>Au centre</option>
+                                            <option value="bottom" ${currentStyle.titlePosition === 'bottom' ? 'selected' : ''}>En bas</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Taille</label>
+                                        <select onchange="updateCatStyle('${catName}', 'titleSize', this.value)" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent" ${!currentStyle.showTitle ? 'disabled' : ''}>
+                                            <option value="sm" ${currentStyle.titleSize === 'sm' ? 'selected' : ''}>Petite</option>
+                                            <option value="md" ${currentStyle.titleSize === 'md' ? 'selected' : ''}>Normale</option>
+                                            <option value="lg" ${currentStyle.titleSize === 'lg' ? 'selected' : ''}>Grande</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Couleur du texte</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" onchange="updateCatStyle('${catName}', 'textColor', this.value)" value="${currentStyle.textColor}" class="h-6 w-8 p-0 border-0 rounded cursor-pointer" ${!currentStyle.showTitle ? 'disabled' : ''}>
+                                            <span class="text-[10px] text-gray-400 font-mono">${currentStyle.textColor}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Bouton -->
+                            <div class="space-y-3">
+                                <h5 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-b border-gray-100 pb-1">5. Bouton d'action</h5>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="text-xs font-semibold text-gray-600">Afficher un bouton</label>
+                                    <input type="checkbox" onchange="updateCatStyle('${catName}', 'showButton', this.checked)" ${currentStyle.showButton ? 'checked' : ''} class="w-4 h-4 text-brand-accent rounded border-gray-300 focus:ring-brand-accent">
+                                </div>
+                                <div class="space-y-2">
+                                    <input type="text" oninput="updateCatStyle('${catName}', 'buttonText', this.value)" value="${currentStyle.buttonText}" placeholder="Texte du bouton" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent" ${!currentStyle.showButton ? 'disabled' : ''}>
+                                    
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-[10px] font-semibold text-gray-500 mb-1">Style visuel</label>
+                                            <select onchange="updateCatStyle('${catName}', 'buttonStyle', this.value)" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent" ${!currentStyle.showButton ? 'disabled' : ''}>
+                                                <option value="classic" ${currentStyle.buttonStyle === 'classic' ? 'selected' : ''}>Classique (carré)</option>
+                                                <option value="rounded" ${currentStyle.buttonStyle === 'rounded' ? 'selected' : ''}>Arrondi</option>
+                                                <option value="pill" ${currentStyle.buttonStyle === 'pill' ? 'selected' : ''}>Pilule (très arrondi)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-semibold text-gray-500 mb-1">Fond bouton</label>
+                                            <input type="color" onchange="updateCatStyle('${catName}', 'buttonBgColor', this.value)" value="${currentStyle.buttonBgColor}" class="h-6 w-full p-0 border-0 rounded cursor-pointer" ${!currentStyle.showButton ? 'disabled' : ''}>
+                                        </div>
+                                        <div class="col-span-2">
+                                            <label class="block text-[10px] font-semibold text-gray-500 mb-1">Texte bouton</label>
+                                            <input type="color" onchange="updateCatStyle('${catName}', 'buttonTextColor', this.value)" value="${currentStyle.buttonTextColor}" class="h-6 w-full p-0 border-0 rounded cursor-pointer" ${!currentStyle.showButton ? 'disabled' : ''}>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 6. Animations -->
+                            <div class="space-y-3">
+                                <h5 class="text-xs font-bold text-gray-800 uppercase tracking-wider border-b border-gray-100 pb-1">6. Effets & Animations (Hover)</h5>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Animation de carte</label>
+                                        <select onchange="updateCatStyle('${catName}', 'animCard', this.value)" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent">
+                                            <option value="none" ${currentStyle.animCard === 'none' ? 'selected' : ''}>Aucune</option>
+                                            <option value="elevate" ${currentStyle.animCard === 'elevate' ? 'selected' : ''}>Élévation légère</option>
+                                            <option value="zoom" ${currentStyle.animCard === 'zoom' ? 'selected' : ''}>Zoom image</option>
+                                            <option value="combined" ${currentStyle.animCard === 'combined' ? 'selected' : ''}>Combiné (Élévation + Zoom)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-1">Animation bouton</label>
+                                        <select onchange="updateCatStyle('${catName}', 'animButton', this.value)" class="w-full text-xs border border-gray-300 rounded p-1.5 focus:outline-none focus:border-brand-accent" ${!currentStyle.showButton ? 'disabled' : ''}>
+                                            <option value="none" ${currentStyle.animButton === 'none' ? 'selected' : ''}>Aucune</option>
+                                            <option value="fade" ${currentStyle.animButton === 'fade' ? 'selected' : ''}>Apparition douce</option>
+                                            <option value="slide" ${currentStyle.animButton === 'slide' ? 'selected' : ''}>Déplacement (Slide up)</option>
+                                            <option value="pulse" ${currentStyle.animButton === 'pulse' ? 'selected' : ''}>Pulsation</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = `<style>.custom-scrollbar::-webkit-scrollbar { width: 6px; } .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; } .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; } .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }</style>` + html;
+        };
+
+        window.updateCatStyle = (catName, key, value) => {
+            if (!pendingCategoryStyles[catName]) {
+                const savedStyle = (settings.categoryStyles && settings.categoryStyles[catName]) || {};
+                pendingCategoryStyles[catName] = { ...DEFAULT_CAT_STYLE, ...savedStyle };
+            }
+            pendingCategoryStyles[catName][key] = value;
+            
+            // Indiquer qu'une modification est en attente d'enregistrement
+            const statusText = document.getElementById('cat-images-save-status');
+            if(statusText) {
+                statusText.innerText = "Modifications en attente d'enregistrement...";
+                statusText.className = "text-sm font-bold text-yellow-600 animate-pulse";
+            }
+
+            // Rafraichir uniquement l'aperçu de cette categorie (sans re-rendre tout le formulaire)
+            refreshCatPreview(catName);
+        };
+
+        window.refreshCatPreview = (catName) => {
+            const safeCatId = catName.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+            const container = document.getElementById(`preview-container-${safeCatId}`);
+            if(!container) return;
+
+            let currentImg = '';
+            if (pendingCategoryImages[catName] && pendingCategoryImages[catName].tempUrl) {
+                currentImg = pendingCategoryImages[catName].tempUrl; // utiliser le blob pour un apercu instantane de l'image modifiee
+            } else {
+                currentImg = (settings.categoryImages && settings.categoryImages[catName]) || '';
+            }
+
+            const currentStyle = pendingCategoryStyles[catName] || (settings.categoryStyles && settings.categoryStyles[catName]) || DEFAULT_CAT_STYLE;
+            const displayImages = currentImg ? [currentImg] : ["https://placehold.co/600x400/f3f4f6/a1a1aa?text=Image+Requise"];
+            
+            // Trouver le wrapper interieur pour le remplacer, en gardant le bouton supprimer s'il existe
+            const previewCardEl = container.querySelector('.category-card-container');
+            if(previewCardEl) {
+                const newHtml = buildCategoryCardHTML(catName, displayImages, currentStyle, true);
+                previewCardEl.outerHTML = newHtml;
+            }
+        };
+
+        window.previewCatImage = (input, catName, safeCatId) => {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Stocker le fichier pour l'upload, et l'URL temporaire pour l'aperçu
+                    pendingCategoryImages[catName] = { file: input.files[0], tempUrl: e.target.result };
+                    
+                    document.getElementById('cat-images-save-status').innerText = "Modifications en attente d'enregistrement...";
+                    document.getElementById('cat-images-save-status').className = "text-sm font-bold text-yellow-600 animate-pulse";
+                    
+                    refreshCatPreview(catName); // Mettre a jour l'aperçu avec la nouvelle image
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        window.removeCategoryImage = (catName) => {
+            openConfirmModal("Supprimer l'image", `Voulez-vous supprimer l'image de couverture pour "${catName}" ?`, async () => {
+                if (!settings.categoryImages) return;
+                
+                const oldUrl = settings.categoryImages[catName];
+                delete settings.categoryImages[catName];
+                if (pendingCategoryImages[catName]) delete pendingCategoryImages[catName];
+                
+                try {
+                    const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'store');
+                    await setDoc(settingsRef, { categoryImages: settings.categoryImages }, { merge: true });
+                    
+                    if (oldUrl && oldUrl.includes('firebasestorage')) {
+                        try {
+                            const oldRef = ref(storage, oldUrl);
+                            await deleteObject(oldRef);
+                        } catch(e) { console.warn("Erreur suppression Storage:", e); }
+                    }
+                    
+                    showToast(`Image de la catégorie "${catName}" supprimée.`, "success");
+                    renderCategoryImagesSettings();
+                } catch(e) {
+                    showToast("Erreur lors de la suppression.", "error");
+                }
+            });
+        };
+
+        window.saveAllCategoryImages = async () => {
+            if (!isAdmin) return;
+            
+            const imageKeys = Object.keys(pendingCategoryImages || {});
+            const styleKeys = Object.keys(pendingCategoryStyles || {});
+            
+            if (imageKeys.length === 0 && styleKeys.length === 0) {
+                showToast("Aucune modification à enregistrer.", "info");
+                return;
+            }
+
+            const btn = document.getElementById('btn-save-cat-images');
+            const statusText = document.getElementById('cat-images-save-status');
+            const logContainer = document.getElementById('diagnostic-log-container');
+            
+            if (!btn || !statusText || !logContainer) return; 
+
+            // Sauvegarde de l'état initial du bouton pour être sûr de le restaurer parfaitement
+            const originalBtnHtml = btn.innerHTML;
+
+            // Initialisation de la console de diagnostic
+            logContainer.innerHTML = '';
+            logContainer.classList.remove('hidden');
+            logContainer.classList.add('flex');
+
+            const addLog = (text, type = 'info') => {
+                const colors = {
+                    info: 'text-green-400',
+                    warn: 'text-yellow-400',
+                    error: 'text-red-400',
+                    highlight: 'text-blue-300 font-bold',
+                    tech: 'text-purple-400 font-mono text-[11px]'
+                };
+                const time = new Date().toLocaleTimeString('fr-FR', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+                const span = document.createElement('span');
+                span.className = colors[type] || colors.info;
+                span.innerText = `[${time}] ${text}`;
+                logContainer.appendChild(span);
+                logContainer.scrollTop = logContainer.scrollHeight; 
+            };
+
+            const withTimeout = (promise, ms, stepName) => {
+                return new Promise((resolve, reject) => {
+                    const timer = setTimeout(() => {
+                        const err = new Error(`L'opération ne répond pas dans le délai imparti (${ms}ms).`);
+                        err.code = "timeout";
+                        err.step = stepName;
+                        reject(err);
+                    }, ms);
+                    promise.then(res => { clearTimeout(timer); resolve(res); })
+                           .catch(err => { clearTimeout(timer); err.step = err.step || stepName; reject(err); });
+                });
+            };
+
+            try {
+                // Verrouillage de l'interface
+                btn.disabled = true;
+                btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Enregistrement en cours...`;
+                statusText.innerText = "Exécution en cours, veuillez patienter...";
+
+                addLog(`[1] Fonction démarrée`, 'highlight');
+                
+                // Diagnostic Technique
+                addLog(`- Storage initialisé : ${!!storage ? 'OUI' : 'NON'}`, 'tech');
+                if (storage) {
+                    addLog(`- Bucket utilisé : ${storage.app.options.storageBucket || 'Inconnu'}`, 'tech');
+                    addLog(`- App ID utilisé : ${appId}`, 'tech');
+                }
+
+                if (!settings.categoryImages) settings.categoryImages = {};
+                if (!settings.categoryStyles) settings.categoryStyles = {};
+                
+                addLog(`[2] Images détectées : ${imageKeys.length}`, 'highlight');
+
+                // Boucle de traitement par image
+                for (const catName of imageKeys) {
+                    addLog(`- Catégorie actuellement traitée : ${catName}`, 'tech');
+                    const fileData = pendingCategoryImages[catName];
+                    if(!fileData || !fileData.file) {
+                        addLog(`Aucun fichier trouvé pour ${catName}, passage...`, 'warn');
+                        continue;
+                    }
+
+                    addLog(`Compression de l'image en cours...`);
+                    let base64Data = await withTimeout(compressImage(fileData.file, 1024, 0.8), 20000, "Compression");
+                    
+                    const sizeInBytes = Math.round((base64Data.length * (3/4)) - 2);
+                    addLog(`- Taille de l'image : ${Math.round(sizeInBytes / 1024)} KB`, 'tech');
+                    addLog(`[3] Compression terminée`, 'highlight');
+
+                    const safeName = catName.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
+                    const fileName = `${safeName}-${Date.now()}.jpg`;
+                    const storagePath = `artifacts/${appId}/public/category-covers/${fileName}`;
+                    addLog(`- Chemin Storage généré : ${storagePath}`, 'tech');
+                    
+                    const storageRef = ref(storage, storagePath);
+                    const oldUrl = settings.categoryImages[catName];
+
+                    addLog(`[4] Upload Firebase démarré...`, 'highlight');
+                    await withTimeout(uploadString(storageRef, base64Data, 'data_url'), 45000, "Upload vers Firebase Storage");
+                    addLog(`[5] Upload Firebase terminé`, 'highlight');
+
+                    addLog(`Récupération de l'URL de téléchargement...`);
+                    const downloadURL = await withTimeout(getDownloadURL(storageRef), 20000, "Récupération URL Storage");
+                    addLog(`[6] URL téléchargée récupérée`, 'highlight');
+                    
+                    settings.categoryImages[catName] = downloadURL;
+
+                    if (oldUrl && oldUrl.includes('firebasestorage') && oldUrl !== downloadURL) {
+                        addLog(`[7] Suppression ancienne image démarrée...`, 'highlight');
+                        try {
+                            const oldRef = ref(storage, oldUrl);
+                            // Protégé par un timeout strict de 15s pour éviter tout blocage silencieux
+                            await withTimeout(deleteObject(oldRef), 15000, "Suppression ancienne image Storage");
+                            addLog(`[8] Suppression ancienne image terminée`, 'highlight');
+                        } catch(e) {
+                            addLog(`[8] Suppression ancienne image terminée (avec erreur ignorée : ${e.code || e.message})`, 'warn');
+                        }
+                    } else {
+                        addLog(`[7] Pas d'ancienne image à supprimer.`, 'highlight');
+                        addLog(`[8] Suppression ancienne image terminée (Ignorée)`, 'highlight');
+                    }
+                }
+
+                // Application des styles modifiés
+                for (const catName of styleKeys) {
+                    settings.categoryStyles[catName] = pendingCategoryStyles[catName];
+                }
+
+                addLog(`[9] Firestore démarré...`, 'highlight');
+                const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'store');
+                await withTimeout(setDoc(settingsRef, { 
+                    categoryImages: settings.categoryImages,
+                    categoryStyles: settings.categoryStyles
+                }, { merge: true }), 20000, "Enregistrement dans Firestore");
+
+                addLog(`[10] Firestore terminé`, 'highlight');
+                
+                // Nettoyage de l'état
+                pendingCategoryImages = {}; 
+                pendingCategoryStyles = {};
+                
+                showToast("Toutes les collections ont été enregistrées !", "success");
+                statusText.innerHTML = `<span class="text-sm font-bold text-green-600">✓ Configurations enregistrées</span>`;
+                addLog(`[11] Processus terminé avec succès`, 'highlight');
+                
+                setTimeout(() => {
+                    statusText.innerHTML = `<span class="text-sm font-medium text-gray-500">Prêt</span>`;
+                }, 4000);
+                
+                renderCategoryImagesSettings(); 
+
+            } catch (fatalError) {
+                // Interception globale d'erreurs
+                const isTimeout = fatalError.code === 'timeout';
+                const errorTitle = isTimeout ? '❌ TIMEOUT DÉTECTÉ' : '❌ ÉCHEC DÉTECTÉ';
+
+                addLog(errorTitle, 'error');
+                addLog(`Étape : ${fatalError.step || 'Non spécifiée'}`, 'error');
+                addLog(`Code erreur : ${fatalError.code || 'N/A'}`, 'error');
+                addLog(`Message : ${fatalError.message || 'Aucun message'}`, 'error');
+                addLog(`Détail : ${String(fatalError)}`, 'error');
+                
+                statusText.innerHTML = `<span class="text-sm font-bold text-red-600">${errorTitle} (Consultez les logs)</span>`;
+            } finally {
+                // GARANTIE ABSOLUE DE RESTAURATION DU BOUTON
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnHtml;
+                }
+            }
         };
 
         function setMaintenanceToggleUI(on) {
@@ -1245,7 +2127,29 @@
                     freeShippingThreshold: parseFloat(document.getElementById('set-free-shipping').value) || 0,
                     whatsappTemplate: document.getElementById('set-whatsapp-template').value,
                     maintenanceMode: document.getElementById('set-maintenance-toggle').dataset.on === '1',
-                    promoCodes: newPromoCodes
+                    promoCodes: newPromoCodes,
+                    services: {
+                        credit: {
+                            title: document.getElementById('set-srv-credit-title').value.trim(),
+                            shortDesc: document.getElementById('set-srv-credit-short').value.trim(),
+                            detailedDesc: document.getElementById('set-srv-credit-detail').value.trim()
+                        },
+                        electro: {
+                            title: document.getElementById('set-srv-electro-title').value.trim(),
+                            shortDesc: document.getElementById('set-srv-electro-short').value.trim(),
+                            linkedCategory: document.getElementById('set-srv-electro-cat').value
+                        },
+                        amenagement: {
+                            title: document.getElementById('set-srv-amenagement-title').value.trim(),
+                            shortDesc: document.getElementById('set-srv-amenagement-short').value.trim(),
+                            linkedCategory: document.getElementById('set-srv-amenagement-cat').value
+                        },
+                        livraison: {
+                            title: document.getElementById('set-srv-livraison-title').value.trim(),
+                            shortDesc: document.getElementById('set-srv-livraison-short').value.trim(),
+                            detailedDesc: document.getElementById('set-srv-livraison-detail').value.trim()
+                        }
+                    }
                 };
                 const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'store');
                 await setDoc(settingsRef, newSettings, { merge: true });
@@ -1261,7 +2165,6 @@
             }
         };
 
-        // GESTION DU TABLEAU DE BORD (STATS & COMMANDES)
         function updateDashboardStats() {
             let activeCount = products.filter(p => p.status === 'En stock').length;
             let pendingCount = orders.filter(o => o.status === 'En attente').length;
@@ -1367,7 +2270,6 @@
             }
         };
 
-        // GESTION RECU PDF
         window.genererRecuPDF = (orderId) => {
             const order = orders.find(o => o.id === orderId);
             if (!order) { showToast("Commande introuvable", "error"); return; }
@@ -1418,7 +2320,6 @@
 
         function formatPrice(price) { return (parseInt(price) || 0).toLocaleString('fr-FR') + ' FCFA'; }
 
-        // MOTEUR DE RECHERCHE GLOBALE
         window.handleGlobalSearch = (query) => {
             const q = query.trim().toLowerCase();
             const searchView = document.getElementById('search-results-view');
@@ -1453,17 +2354,232 @@
             document.getElementById('categories-view').classList.remove('hidden');
         };
 
-        // PARTAGE WHATSAPP (Correction encodage global)
         window.shareProductWhatsApp = (productId) => {
             const prod = products.find(p => p.id === productId);
             if(!prod) return;
             const text = `Bonjour Terra Market 👋,\nJe suis intéressé(e) par cet article : *${prod.name}* au prix de *${formatPrice(prod.price)}*. Est-il disponible ?`;
             const waDigits = (settings.whatsapp || '2290147527920').replace(/[^0-9]/g, '');
-            // Encodage complet du message pour préserver les accents et caractères spéciaux
             window.open(`https://wa.me/${waDigits}?text=${encodeURIComponent(text)}`, '_blank');
         };
 
-        // COMPOSANT HTML PRODUIT (Générique)
+        window.openLightbox = (src) => {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            if(src && src.startsWith('http')) {
+                img.src = src;
+                modal.classList.remove('hidden');
+                setTimeout(() => img.classList.replace('scale-95', 'scale-100'), 10);
+            }
+        };
+        
+        window.closeLightbox = () => {
+            const modal = document.getElementById('lightbox-modal');
+            const img = document.getElementById('lightbox-img');
+            img.classList.replace('scale-100', 'scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
+        window.openProductDetails = (productId) => {
+            const prod = products.find(p => p.id === productId);
+            if(!prod) return;
+            
+            const isOOS = prod.status === 'Rupture';
+            const hasDiscount = prod.oldPrice && parseFloat(prod.oldPrice) > parseFloat(prod.price);
+            
+            document.getElementById('detail-img').src = prod.image;
+            document.getElementById('detail-category').innerText = prod.category;
+            document.getElementById('detail-title').innerText = prod.name;
+            document.getElementById('detail-price').innerText = formatPrice(prod.price);
+            document.getElementById('detail-desc').innerHTML = prod.description ? prod.description.replace(/\n/g, '<br>') : 'Aucune description.';
+            
+            const oldPriceEl = document.getElementById('detail-old-price');
+            if(hasDiscount) {
+                oldPriceEl.innerText = formatPrice(prod.oldPrice);
+                oldPriceEl.classList.remove('hidden');
+            } else {
+                oldPriceEl.classList.add('hidden');
+            }
+
+            let badgesHtml = '';
+            if (isOOS) badgesHtml += `<span class="bg-red-500 text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-sm">Rupture</span>`;
+            if (hasDiscount) badgesHtml += `<span class="bg-red-600 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-sm">-${Math.round(((prod.oldPrice - prod.price) / prod.oldPrice) * 100)}%</span>`;
+            document.getElementById('detail-badges').innerHTML = badgesHtml;
+
+            const varContainer = document.getElementById('detail-variantes-container');
+            const varSelect = document.getElementById('detail-variante-select');
+            const varianteOptions = (prod.variante || '').split(',').map(v => v.trim()).filter(Boolean);
+            if(varianteOptions.length > 0) {
+                varSelect.innerHTML = varianteOptions.map(v => `<option value="${v}">${v}</option>`).join('');
+                varContainer.classList.remove('hidden');
+            } else {
+                varContainer.classList.add('hidden');
+                varSelect.innerHTML = '';
+            }
+
+            const btnCart = document.getElementById('detail-btn-cart');
+            const btnOrder = document.getElementById('detail-btn-order');
+
+            btnCart.replaceWith(btnCart.cloneNode(true));
+            btnOrder.replaceWith(btnOrder.cloneNode(true));
+            
+            const newBtnCart = document.getElementById('detail-btn-cart');
+            const newBtnOrder = document.getElementById('detail-btn-order');
+
+            if (isOOS) {
+                newBtnCart.disabled = true; newBtnCart.classList.add('opacity-50', 'cursor-not-allowed');
+                newBtnOrder.disabled = true; newBtnOrder.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-400'); newBtnOrder.innerText = 'Indisponible';
+            } else {
+                newBtnCart.disabled = false; newBtnCart.classList.remove('opacity-50', 'cursor-not-allowed');
+                newBtnOrder.disabled = false; newBtnOrder.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400'); newBtnOrder.innerText = 'Commander maintenant';
+                
+                newBtnCart.onclick = () => {
+                    const tempSelect = document.createElement('select'); tempSelect.id = `variant-select-${prod.id}`;
+                    tempSelect.innerHTML = `<option value="${varSelect.value}" selected></option>`;
+                    document.body.appendChild(tempSelect);
+                    addToCart(prod.id, false);
+                    tempSelect.remove();
+                };
+                newBtnOrder.onclick = () => {
+                    const tempSelect = document.createElement('select'); tempSelect.id = `variant-select-${prod.id}`;
+                    tempSelect.innerHTML = `<option value="${varSelect.value}" selected></option>`;
+                    document.body.appendChild(tempSelect);
+                    addToCart(prod.id, true);
+                    tempSelect.remove();
+                    closeProductDetails();
+                };
+            }
+
+            document.getElementById('product-detail-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeProductDetails = () => {
+            document.getElementById('product-detail-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        window.openServiceModal = (serviceId) => {
+            const srvData = (settings.services || {})[serviceId];
+            if(!srvData) return;
+            const container = document.getElementById('service-modal-content');
+            const modalInner = document.getElementById('service-modal-inner');
+            const closeBtn = document.getElementById('service-modal-close-btn');
+
+            container.innerHTML = '';
+            
+            if (serviceId === 'credit') {
+                // MODIFICATION #001: Application au parent fixe pour éviter le fond blanc au scroll
+                modalInner.classList.remove('bg-white');
+                modalInner.classList.add('bg-[#1B2436]');
+                
+                closeBtn.classList.remove('bg-gray-100', 'hover:bg-gray-200', 'text-gray-700');
+                closeBtn.classList.add('bg-gray-800', 'hover:bg-gray-700', 'text-gray-300');
+
+                container.innerHTML = `
+                    <div class="w-full flex-grow flex flex-col p-6 sm:p-12 text-white relative">
+                        <div class="flex items-start justify-between mb-8">
+                            <div class="bg-blue-600/20 w-16 h-16 rounded-xl flex items-center justify-center border border-blue-500/30 text-blue-400 shrink-0">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                            <div class="border border-red-500/50 text-red-200 text-xs sm:text-sm font-bold px-4 py-2 rounded-full bg-red-900/30 backdrop-blur ml-4 text-center">
+                                EXCLUT ÉLECTROMÉNAGER
+                            </div>
+                        </div>
+                        <h2 class="text-3xl sm:text-5xl font-bold uppercase tracking-tight mb-4">${srvData.title || 'MEUBLES À CRÉDIT'}</h2>
+                        <p class="text-gray-300 text-lg sm:text-xl mb-6 max-w-2xl">${srvData.shortDesc || "Versez 50 % aujourd'hui et payez le reste en 3 mois, en toute sérénité."}</p>
+                        
+                        <div class="inline-block self-start bg-white text-[#1B2436] font-black text-sm sm:text-base px-5 py-2.5 rounded-lg shadow-lg mb-12">
+                            50 % AUJOURD'HUI • 50 % EN 3 MOIS
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-16 border-t border-gray-700/50 pt-8 sm:pt-12 flex-grow">
+                            <div>
+                                <h3 class="flex items-center text-blue-500 font-bold mb-6 text-sm sm:text-base uppercase tracking-widest">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    COMMENT ÇA MARCHE ?
+                                </h3>
+                                <ul class="space-y-4 text-gray-300 text-base sm:text-lg">
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 font-bold mr-3">1.</span>
+                                        <span>Choisissez votre meuble (hors électroménager).</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 font-bold mr-3">2.</span>
+                                        <span>Versez l'acompte initial de 50%.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 font-bold mr-3">3.</span>
+                                        <span>Fournissez une pièce d'identité et un justificatif de domicile.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-500 font-bold mr-3">4.</span>
+                                        <span>Signez le contrat et payez le reste sur 3 mois.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="flex flex-col justify-between">
+                                <div>
+                                    <h3 class="text-gray-400 font-bold mb-4 text-sm sm:text-base uppercase tracking-widest">VOS ENGAGEMENTS</h3>
+                                    <p class="text-gray-400 text-sm sm:text-base leading-relaxed mb-8">${srvData.detailedDesc || "En signant le contrat, vous vous engagez à respecter les dates d'échéance convenues et à conserver les articles en bon état. Tout retard peut entraîner des pénalités."}</p>
+                                </div>
+                                <a href="https://wa.me/${(settings.whatsapp || '2290147527920').replace(/[^0-9]/g, '')}?text=${encodeURIComponent("Bonjour Terra Market 👋,\nJe souhaite faire une demande pour acheter un meuble à crédit.")}" target="_blank" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-center py-4 rounded-xl transition shadow-[0_0_20px_rgba(37,99,235,0.4)] flex justify-center items-center text-lg uppercase tracking-wide mt-auto">
+                                    FAIRE UNE DEMANDE 
+                                    <svg class="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // MODIFICATION #001: Nettoyage et restauration du fond blanc
+                modalInner.classList.remove('bg-[#1B2436]');
+                modalInner.classList.add('bg-white');
+
+                closeBtn.classList.remove('bg-gray-800', 'hover:bg-gray-700', 'text-gray-300');
+                closeBtn.classList.add('bg-gray-100', 'hover:bg-gray-200', 'text-gray-700');
+
+                let categoryGridHtml = '';
+                if(srvData.linkedCategory && srvData.linkedCategory !== '') {
+                    const linkedProducts = products.filter(p => p.category === srvData.linkedCategory);
+                    if(linkedProducts.length > 0) {
+                        const cardsHtml = linkedProducts.map(p => buildProductCardHTML(p)).join('');
+                        categoryGridHtml = `
+                            <div class="mt-8 border-t border-gray-100 pt-8">
+                                <h3 class="text-xl font-serif font-bold text-gray-900 mb-6 flex items-center">
+                                    <span class="bg-brand-accent/10 text-brand-accent p-1.5 rounded mr-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></span>
+                                    Articles concernés (${srvData.linkedCategory})
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    ${cardsHtml}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        categoryGridHtml = `<div class="mt-8 border-t border-gray-100 pt-8 text-center text-gray-400 italic text-sm">Aucun article trouvé dans la catégorie "${srvData.linkedCategory}".</div>`;
+                    }
+                }
+
+                container.innerHTML = `
+                    <div class="p-6 sm:p-10 flex-grow bg-white">
+                        <div class="max-w-3xl mb-4">
+                            <h2 class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 mb-4">${srvData.title}</h2>
+                            <p class="text-gray-600 text-lg mb-2">${srvData.shortDesc}</p>
+                            ${srvData.detailedDesc ? `<p class="text-gray-500 text-sm mt-4 bg-gray-50 p-4 rounded-xl border border-gray-100">${srvData.detailedDesc}</p>` : ''}
+                        </div>
+                        ${categoryGridHtml}
+                    </div>
+                `;
+            }
+
+            document.getElementById('service-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeServiceModal = () => {
+            document.getElementById('service-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
         function buildProductCardHTML(prod) {
             const isOOS = prod.status === 'Rupture';
             const hasDiscount = prod.oldPrice && parseFloat(prod.oldPrice) > parseFloat(prod.price);
@@ -1471,9 +2587,9 @@
             
             let badgesHTML = '';
             if (isOOS) {
-                badgesHTML += `<div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-md z-10">Rupture</div>`;
+                badgesHTML += `<div class="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded shadow-md z-10 pointer-events-none">Rupture</div>`;
             } else if (hasDiscount) {
-                badgesHTML += `<div class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-md shadow-md z-10">-${discountPercent}%</div>`;
+                badgesHTML += `<div class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-md shadow-md z-10 pointer-events-none">-${discountPercent}%</div>`;
             }
 
             const cartBtnClass = isOOS ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-brand-dark";
@@ -1481,32 +2597,32 @@
             
             const varianteOptions = (prod.variante || '').split(',').map(v => v.trim()).filter(Boolean);
             const varianteSelectHtml = varianteOptions.length > 0 ? `
-                <div class="mb-4 mt-2">
-                    <select id="variant-select-${prod.id}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white font-medium text-gray-700">
+                <div class="mb-4 mt-2 w-full" onclick="event.stopPropagation()">
+                    <select id="variant-select-${prod.id}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-brand-accent focus:outline-none bg-white font-medium text-gray-700 text-center">
                         ${varianteOptions.map(v => `<option value="${v}">${v}</option>`).join('')}
                     </select>
                 </div>` : '';
 
             return `
-                <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col h-full relative">
+                <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 flex flex-col h-full relative cursor-pointer" onclick="openProductDetails('${prod.id}')">
                     ${badgesHTML}
                     <div class="relative h-56 sm:h-64 overflow-hidden bg-gray-50 flex items-center justify-center ${isOOS ? 'opacity-70 grayscale-[30%]' : ''}">
-                        <img src="${prod.image}" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-contain group-hover:scale-105 transition duration-500" alt="${prod.name}">
-                        <button onclick="shareProductWhatsApp('${prod.id}')" class="absolute bottom-3 right-3 bg-green-500 hover:bg-green-600 text-white p-2.5 rounded-full shadow-md transition hover:scale-110 z-10 opacity-0 group-hover:opacity-100" title="Partager sur WhatsApp">
+                        <img src="${prod.image}" loading="lazy" decoding="async" width="600" height="400" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${prod.name}">
+                        <button onclick="event.stopPropagation(); shareProductWhatsApp('${prod.id}')" class="absolute bottom-3 right-3 bg-green-500 hover:bg-green-600 text-white p-2.5 rounded-full shadow-md transition hover:scale-110 z-10 opacity-0 group-hover:opacity-100" title="Partager sur WhatsApp">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.397-.18-1.22-.453-2.333-1.455-1.46-1.31-2.059-2.888-2.122-2.996-.064-.109-.505-.671-.505-1.284 0-.614.318-.918.435-1.036.118-.119.254-.149.338-.149.085 0 .17.001.242.004.075.004.172-.03.271.213.125.307.427 1.045.465 1.121.038.076.064.164.015.263-.048.099-.074.159-.148.248-.076.089-.158.196-.227.272-.075.084-.156.176-.068.329.088.152.392.646.839 1.049.578.522 1.066.685 1.217.76.152.075.242.064.333-.039.091-.104.392-.454.498-.609.106-.155.212-.129.349-.079.137.05 1.157.545 1.258.62.102.074.171.119.196.185.025.066.025.385-.119.79z"></path></svg>
                         </button>
                     </div>
-                    <div class="p-4 sm:p-5 flex flex-col flex-grow justify-between bg-white">
-                        <div>
+                    <div class="p-4 sm:p-5 flex flex-col flex-grow justify-between bg-white text-center items-center">
+                        <div class="w-full flex flex-col items-center">
                             <h3 class="font-serif font-bold text-xl sm:text-2xl text-gray-900 mb-1 sm:mb-2 leading-tight">${prod.name}</h3>
-                            <p class="text-sm text-gray-500 mb-3 line-clamp-2 min-h-[40px]">${prod.description || ''}</p>
-                            <div class="flex items-center space-x-2 mb-2 sm:mb-3">
+                            <p class="text-sm text-gray-500 mb-3 line-clamp-2 min-h-[40px] text-center">${prod.description || ''}</p>
+                            <div class="flex items-center justify-center space-x-2 mb-2 sm:mb-3">
                                 <p class="text-brand-accent font-bold text-lg sm:text-xl">${formatPrice(prod.price)}</p>
                                 ${hasDiscount ? `<span class="text-xs sm:text-sm text-gray-400 line-through font-medium">${formatPrice(prod.oldPrice)}</span>` : ''}
                             </div>
                             ${varianteSelectHtml}
                         </div>
-                        <div class="flex space-x-2 sm:space-x-3 mt-auto pt-2">
+                        <div class="flex space-x-2 sm:space-x-3 mt-auto pt-2 w-full" onclick="event.stopPropagation()">
                             <button ${isOOS ? 'disabled' : ''} onclick="addToCart('${prod.id}', false)" class="flex-none p-3 sm:p-3.5 rounded-lg transition ${cartBtnClass}" title="Ajouter au panier">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             </button>
@@ -1519,7 +2635,6 @@
             `;
         }
 
-        // AFFICHAGE DES CATEGORIES (Accueil public)
         function renderCategories() {
             const grid = document.getElementById('category-grid');
             if(!grid) return;
@@ -1538,7 +2653,8 @@
 
             const CATEGORIES_IMG = {
                 "Matelas": "https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=600&q=80",
-                "TV LG Smart": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80",
+                "TV LG LED": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80",
+                "TV LG Smart": "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=600&q=80",
                 "Siège Balançoire": "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=600&q=80",
                 "Table à Manger": "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&w=600&q=80",
                 "Rideaux & Draps": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80",
@@ -1553,28 +2669,34 @@
             const existingCategories = [...new Set(products.map(p => p.category))];
 
             existingCategories.forEach(catName => {
-                const catProducts = products.filter(p => p.category === catName && p.image);
-                const images = catProducts.map(p => p.image);
+                let displayImages = [];
+                // Priorité à l'image stockée dans les paramètres (MODIFICATION #002 conservée)
+                const adminCustomImg = settings.categoryImages && settings.categoryImages[catName];
                 
-                const displayImages = images.length > 0 ? images : [CATEGORIES_IMG[catName] || "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=80"];
-                const firstImg = displayImages[0];
-
-                grid.innerHTML += `
-                    <div onclick="openCategory('${catName}')" class="perf-optimize group cursor-pointer rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 bg-white relative">
-                        <div class="w-full h-40 sm:h-48 overflow-hidden relative category-card-container bg-gray-50 flex items-center justify-center" data-images='${JSON.stringify(displayImages)}'>
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10 transition-opacity group-hover:opacity-90"></div>
-                            <img src="${firstImg}" loading="lazy" decoding="async" width="600" height="400" class="category-slider-img w-full h-full object-cover group-hover:scale-110 transition duration-700" alt="${catName}">
-                            <h3 class="absolute bottom-4 left-4 right-4 z-20 text-white font-bold text-lg sm:text-xl leading-tight text-center">${catName}</h3>
-                        </div>
-                    </div>
-                `;
+                if (adminCustomImg) {
+                    displayImages = [adminCustomImg];
+                } else {
+                    const catProducts = products.filter(p => p.category === catName && p.image);
+                    const images = catProducts.map(p => p.image);
+                    displayImages = images.length > 0 ? images : [CATEGORIES_IMG[catName] || "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&q=80"];
+                }
+                
+                // Recuperation du style personnalise ou du defaut (MODIFICATION #004)
+                const styleConfig = (settings.categoryStyles && settings.categoryStyles[catName]) ? { ...DEFAULT_CAT_STYLE, ...settings.categoryStyles[catName] } : DEFAULT_CAT_STYLE;
+                
+                // Utilisation du builder universel pour generer la carte front-end
+                grid.innerHTML += buildCategoryCardHTML(catName, displayImages, styleConfig, false);
             });
 
+            // Re-attacher le slider si necessaire
             setTimeout(() => {
                 document.querySelectorAll('.category-card-container').forEach(container => {
                     const imgElement = container.querySelector('.category-slider-img');
+                    if(!imgElement) return;
                     try {
-                        const images = JSON.parse(container.dataset.images);
+                        const imagesData = container.getAttribute('data-images');
+                        if (!imagesData) return;
+                        const images = JSON.parse(imagesData);
                         if (images.length > 1) {
                             let currentIndex = 0;
                             setInterval(() => {
@@ -1607,7 +2729,6 @@
                 return;
             }
 
-            // Tri dynamique
             const sortBy = document.getElementById('product-sort-select').value;
             if (sortBy === 'price-asc') {
                 filteredProducts.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
@@ -1626,7 +2747,6 @@
             }
         };
 
-        // GESTION DU PANIER & PROMOTIONS DYNAMIQUES
         window.applyPromoCode = () => {
             const input = document.getElementById('promo-code-input').value.trim().toUpperCase();
             const msgEl = document.getElementById('promo-message');
@@ -1648,7 +2768,7 @@
                 msgEl.className = "text-xs mt-1.5 font-medium text-red-500";
                 msgEl.classList.remove('hidden');
             }
-            updateCartUI(); // Va recalculer la remise en fonction du type (fixe ou %)
+            updateCartUI(); 
         };
 
         function updateCartUI() {
@@ -1857,8 +2977,6 @@
                     uploadStatus.innerText = "📤 Compression et sauvegarde...";
                     btnSave.innerText = "Compression...";
                     
-                    // CORRECTION ULTIME : Sauvegarde directe de la chaîne Base64 compressée dans Firestore.
-                    // On évite complètement Firebase Storage qui bloque souvent les uploads dans ce type d'environnement (erreurs CORS).
                     const compressedDataUrl = await compressImage(file, 800, 0.75);
                     image = compressedDataUrl;
                     
@@ -2048,6 +3166,20 @@
         
         window.logoutAdmin = () => { signOut(auth).catch((e) => console.error(e)); };
 
+        function listenToOrders() {
+            if (unsubscribeOrders) return;
+            const ordersRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
+            unsubscribeOrders = onSnapshot(ordersRef, (snapshot) => {
+                orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                orders.sort((a, b) => b.createdAt - a.createdAt);
+                if(document.getElementById('admin-view').classList.contains('active')) {
+                    renderOrdersDash();
+                    renderOrdersTableFull();
+                    updateDashboardStats();
+                }
+            }, (error) => console.error("Erreur Firestore (Commandes):", error));
+        }
+
         onAuthStateChanged(auth, (fbUser) => {
             isAdmin = !!(fbUser && !fbUser.isAnonymous);
             if (isAdmin) {
@@ -2056,12 +3188,22 @@
                 document.getElementById('admin-view').classList.add('active');
                 window.scrollTo(0, 0);
                 showToast("Connexion à l'Espace Pro réussie", "success");
+                
+                listenToOrders();
+                
                 renderAdminProducts(); renderOrdersTableFull(); updateDashboardStats();
                 applySettingsToStorefront(); 
-            } else if (document.getElementById('admin-view').classList.contains('active')) {
-                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-                document.getElementById('client-view').classList.add('active');
-                applySettingsToStorefront();
+            } else {
+                if (unsubscribeOrders) {
+                    unsubscribeOrders();
+                    unsubscribeOrders = null;
+                    orders = [];
+                }
+                if (document.getElementById('admin-view').classList.contains('active')) {
+                    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                    document.getElementById('client-view').classList.add('active');
+                    applySettingsToStorefront();
+                }
             }
         });
         
@@ -2131,7 +3273,6 @@
 
         window.onload = () => { 
             initFirebase();
-            initTemplates();
             updateCartUI(); 
         };
     </script>
